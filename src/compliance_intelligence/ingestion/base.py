@@ -6,6 +6,8 @@ from typing import Protocol
 
 from compliance_intelligence.domain.models import SanctionsRecord
 
+SYNTHETIC_SNAPSHOT_PREFIX = "synthetic-"
+
 
 @dataclass(frozen=True, slots=True)
 class SourceSnapshot:

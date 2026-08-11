@@ -1,3 +1,25 @@
+Metadata-Version: 2.4
+Name: compliance-intelligence-platform
+Version: 0.1.0
+Summary: Auditable sanctions screening and public-document intelligence portfolio
+Requires-Python: <3.14,>=3.12
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: fastapi<1,>=0.115
+Requires-Dist: httpx<1,>=0.28
+Requires-Dist: pydantic<3,>=2.10
+Requires-Dist: pydantic-settings<3,>=2.7
+Requires-Dist: rapidfuzz<4,>=3.9
+Requires-Dist: rank-bm25<1,>=0.2
+Requires-Dist: spacy<4,>=3.8
+Requires-Dist: uvicorn[standard]<1,>=0.34
+Provides-Extra: dev
+Requires-Dist: mypy<2,>=1.14; extra == "dev"
+Requires-Dist: pytest<10,>=8; extra == "dev"
+Requires-Dist: pytest-cov<8,>=6; extra == "dev"
+Requires-Dist: ruff<1,>=0.12; extra == "dev"
+Dynamic: license-file
+
 # Compliance Intelligence Platform
 
 An auditable portfolio system for public sanctions screening and information extraction over legal/government text. It combines entity normalization, explainable fuzzy matching, structured extraction, retrieval, API interoperability, evaluation, and analyst-ready exports.
@@ -57,14 +79,10 @@ python -m venv .venv
 ./.venv/Scripts/Activate.ps1
 python -m pip install -e ".[dev]"
 pytest
-compliance-intelligence ingest --source synthetic
-$env:ALLOW_SYNTHETIC_DATASET = "true"
 uvicorn compliance_intelligence.api.main:app --reload
 ```
 
-The health endpoint is available immediately. The screening endpoint returns `503` until a verified dataset snapshot is loaded; this prevents an empty dataset from producing false “clear” results. Snapshots are loaded at startup from `SNAPSHOT_DIRECTORY` (default `data/processed/snapshots`); snapshots produced from the synthetic fixture are excluded unless `ALLOW_SYNTHETIC_DATASET=true`, keeping demonstration data isolated from real screening.
-
-The GitHub Actions workflow in `.github/workflows/quality.yml` activates when this repository is pushed to GitHub; until then `scripts/run_checks.ps1` runs the identical checks locally.
+The health endpoint is available immediately. The screening endpoint returns `503` until a verified dataset snapshot is loaded; this prevents an empty dataset from producing false “clear” results.
 
 For the containerized API:
 
@@ -74,7 +92,7 @@ docker compose config
 docker compose up --build
 ```
 
-The API port is bound to `127.0.0.1`. The container loads snapshots from the read-only `./data` mount at startup; with `ALLOW_SYNTHETIC_DATASET=true` in `.env` it serves the labeled synthetic fixture. Screening against authoritative data remains unavailable until the M1 source adapters are implemented and verified.
+The API port is bound to `127.0.0.1`. The default container still has no authoritative dataset loader wired into application startup, so screening remains unavailable until M1 implements and verifies that boundary.
 
 ## Delivery milestones
 

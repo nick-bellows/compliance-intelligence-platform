@@ -3,7 +3,6 @@ from __future__ import annotations
 import re
 import unicodedata
 
-
 NON_ALPHANUMERIC = re.compile(r"[^a-z0-9 ]+")
 WHITESPACE = re.compile(r"\s+")
 

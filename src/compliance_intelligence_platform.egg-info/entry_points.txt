@@ -1,0 +1,2 @@
+[console_scripts]
+compliance-intelligence = compliance_intelligence.cli:main

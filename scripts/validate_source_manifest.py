@@ -4,7 +4,6 @@ import json
 import sys
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "data" / "source-manifest.json"
 VALID_STATUSES = {"planned", "active", "retired"}

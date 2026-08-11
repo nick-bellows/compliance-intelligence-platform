@@ -8,9 +8,10 @@ from compliance_intelligence.api.schemas import (
     ScreenRequest,
     ScreenResponse,
 )
+from compliance_intelligence.config import Settings, settings
 from compliance_intelligence.domain.models import SanctionsRecord, ScreeningQuery
-from compliance_intelligence.matching.engine import screen_records
-
+from compliance_intelligence.ingestion.store import load_screening_dataset
+from compliance_intelligence.matching.engine import MatchingThresholds, screen_records
 
 DISCLAIMER = (
     "Potential matches require human review and source verification; this output is not a "
@@ -21,6 +22,7 @@ DISCLAIMER = (
 def create_app(
     records: list[SanctionsRecord] | None = None,
     snapshot_ids: tuple[str, ...] = (),
+    thresholds: MatchingThresholds | None = None,
 ) -> FastAPI:
     app = FastAPI(
         title="Compliance Intelligence Platform",
@@ -52,6 +54,7 @@ def create_app(
             ),
             loaded_records,
             snapshot_ids,
+            thresholds,
         )
         return ScreenResponse(
             query_name=request.name,
@@ -74,5 +77,15 @@ def create_app(
     return app
 
 
-app = create_app()
+def build_app_from_settings(app_settings: Settings) -> FastAPI:
+    """Build the app from on-disk snapshots; with none available it stays fail-closed."""
+
+    records, snapshot_ids = load_screening_dataset(
+        app_settings.snapshot_directory,
+        app_settings.allow_synthetic_dataset,
+    )
+    return create_app(records, snapshot_ids, app_settings.matching_thresholds())
+
+
+app = build_app_from_settings(settings)
 
