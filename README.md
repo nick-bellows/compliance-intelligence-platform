@@ -96,11 +96,11 @@ The API port is bound to `127.0.0.1`. The container loads snapshots from the rea
 
 ### M3 — Portfolio release
 
-- [ ] Docker build and smoke test pass.
-- [ ] CI, lint, types, and tests pass.
-- [ ] Data cards and model/evaluation cards are complete.
-- [ ] Power BI instructions and reviewed screenshots are present.
-- [ ] Limitations, failure cases, and human-review workflow are documented.
+- [x] Docker build and smoke test pass (`scripts/smoke_docker.ps1`).
+- [x] CI, lint, types, and tests pass — verified locally via `scripts/run_checks.ps1`; the GitHub Actions workflow runs the identical commands once the repo is pushed.
+- [x] Data cards and model/evaluation cards are complete ([docs/data-cards/](docs/data-cards/), [docs/model-cards/](docs/model-cards/)).
+- [ ] Power BI instructions and reviewed screenshots are present — instructions and the four-table export are done ([powerbi/README.md](powerbi/README.md)); building the `.pbix` and capturing reviewed screenshots requires Power BI Desktop.
+- [x] Limitations, failure cases, and human-review workflow are documented ([docs/limitations.md](docs/limitations.md)).
 
 ## Disclaimer
 

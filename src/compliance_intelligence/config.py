@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     snapshot_directory: Path = Path("data/processed/snapshots")
     corpus_directory: Path = Path("data/processed/corpus")
     allow_synthetic_dataset: bool = False
+    max_snapshot_age_days: int = 45
     minimum_match_score: float = 89.0
     strong_match_score: float = 95.0
     exact_match_score: float = 99.5

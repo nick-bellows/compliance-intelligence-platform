@@ -46,6 +46,9 @@ compliance-intelligence = "compliance_intelligence.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.coverage.report]
+fail_under = 80
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "--strict-markers"

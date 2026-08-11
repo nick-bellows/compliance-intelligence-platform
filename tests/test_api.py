@@ -55,13 +55,15 @@ def test_create_app_applies_injected_thresholds() -> None:
     assert response.json()["hits"] == []
 
 
-def _write_synthetic_snapshot(directory: Path) -> None:
+def _write_synthetic_snapshot(
+    directory: Path, retrieved_at: datetime = datetime(2026, 8, 10, 12, 0, tzinfo=UTC)
+) -> None:
     save_snapshot(
         SourceSnapshot(
             snapshot_id="synthetic-fixture-test1234",
             source_name="SYNTHETIC_LIST",
             source_url="data/samples/synthetic_sanctions_fixture.csv",
-            retrieved_at=datetime(2026, 8, 10, 12, 0, tzinfo=UTC),
+            retrieved_at=retrieved_at,
             sha256="b" * 64,
             terms_note="synthetic",
             records=(
@@ -94,4 +96,21 @@ def test_settings_app_serves_synthetic_when_allowed(tmp_path: Path) -> None:
     body = response.json()
     assert body["review_required"] is True
     assert body["dataset_snapshot_ids"] == ["synthetic-fixture-test1234"]
+
+
+def test_health_reports_fresh_snapshot_as_ok(tmp_path: Path) -> None:
+    _write_synthetic_snapshot(tmp_path, retrieved_at=datetime.now(UTC))
+    settings = Settings(_env_file=None, snapshot_directory=tmp_path, allow_synthetic_dataset=True)
+    body = TestClient(build_app_from_settings(settings)).get("/health").json()
+    assert body["status"] == "ok"
+    assert body["snapshots"][0]["stale"] is False
+
+
+def test_health_degrades_when_snapshot_exceeds_max_age(tmp_path: Path) -> None:
+    _write_synthetic_snapshot(tmp_path, retrieved_at=datetime(2025, 1, 1, tzinfo=UTC))
+    settings = Settings(_env_file=None, snapshot_directory=tmp_path, allow_synthetic_dataset=True)
+    body = TestClient(build_app_from_settings(settings)).get("/health").json()
+    assert body["status"] == "degraded"
+    assert body["snapshots"][0]["stale"] is True
+    assert body["snapshots"][0]["retrieved_at_utc"].startswith("2025-01-01")
 

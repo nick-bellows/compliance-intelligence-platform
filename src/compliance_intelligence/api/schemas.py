@@ -26,8 +26,15 @@ class ScreenResponse(BaseModel):
     disclaimer: str
 
 
+class SnapshotHealth(BaseModel):
+    snapshot_id: str
+    retrieved_at_utc: str | None
+    stale: bool
+
+
 class HealthResponse(BaseModel):
     status: str
     datasets_loaded: bool
     dataset_snapshot_ids: list[str]
+    snapshots: list[SnapshotHealth] = Field(default_factory=list)
 

@@ -1,6 +1,6 @@
 # Matching evaluation report
 
-Generated: 2026-08-11T02:56:51.409090+00:00
+Generated: 2026-08-11T03:04:38.640934+00:00
 Scorer version: `rapidfuzz-ratio-tokensort-v2` · Thresholds version: `evaluated-2026.08-v2`
 Labeled set: `eval\data\matching_cases.csv` (sha256 `f28830e9973d…`), 163 cases (98 tune / 65 holdout).
 

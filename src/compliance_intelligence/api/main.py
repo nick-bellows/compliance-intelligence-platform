@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
+
 from fastapi import FastAPI, HTTPException
 
 from compliance_intelligence.api.schemas import (
@@ -7,10 +9,11 @@ from compliance_intelligence.api.schemas import (
     HitResponse,
     ScreenRequest,
     ScreenResponse,
+    SnapshotHealth,
 )
 from compliance_intelligence.config import Settings, settings
 from compliance_intelligence.domain.models import SanctionsRecord, ScreeningQuery
-from compliance_intelligence.ingestion.store import load_screening_dataset
+from compliance_intelligence.ingestion.store import load_screening_snapshots
 from compliance_intelligence.matching.engine import MatchingThresholds, screen_records
 
 DISCLAIMER = (
@@ -23,6 +26,8 @@ def create_app(
     records: list[SanctionsRecord] | None = None,
     snapshot_ids: tuple[str, ...] = (),
     thresholds: MatchingThresholds | None = None,
+    snapshot_retrieved_at: dict[str, datetime] | None = None,
+    max_snapshot_age_days: int | None = None,
 ) -> FastAPI:
     app = FastAPI(
         title="Compliance Intelligence Platform",
@@ -33,10 +38,29 @@ def create_app(
 
     @app.get("/health", response_model=HealthResponse)
     def health() -> HealthResponse:
+        now = datetime.now(UTC)
+        snapshots: list[SnapshotHealth] = []
+        degraded = False
+        for snapshot_id in snapshot_ids:
+            retrieved_at = (snapshot_retrieved_at or {}).get(snapshot_id)
+            stale = bool(
+                retrieved_at is not None
+                and max_snapshot_age_days is not None
+                and (now - retrieved_at).days > max_snapshot_age_days
+            )
+            degraded = degraded or stale
+            snapshots.append(
+                SnapshotHealth(
+                    snapshot_id=snapshot_id,
+                    retrieved_at_utc=retrieved_at.isoformat() if retrieved_at else None,
+                    stale=stale,
+                )
+            )
         return HealthResponse(
-            status="ok",
+            status="degraded" if degraded else "ok",
             datasets_loaded=bool(snapshot_ids),
             dataset_snapshot_ids=list(snapshot_ids),
+            snapshots=snapshots,
         )
 
     @app.post("/v1/screen", response_model=ScreenResponse)
@@ -80,11 +104,19 @@ def create_app(
 def build_app_from_settings(app_settings: Settings) -> FastAPI:
     """Build the app from on-disk snapshots; with none available it stays fail-closed."""
 
-    records, snapshot_ids = load_screening_dataset(
+    snapshots = load_screening_snapshots(
         app_settings.snapshot_directory,
         app_settings.allow_synthetic_dataset,
     )
-    return create_app(records, snapshot_ids, app_settings.matching_thresholds())
+    records = [record for snapshot in snapshots for record in snapshot.records]
+    snapshot_ids = tuple(snapshot.snapshot_id for snapshot in snapshots)
+    return create_app(
+        records,
+        snapshot_ids,
+        app_settings.matching_thresholds(),
+        {snapshot.snapshot_id: snapshot.retrieved_at for snapshot in snapshots},
+        app_settings.max_snapshot_age_days,
+    )
 
 
 app = build_app_from_settings(settings)
