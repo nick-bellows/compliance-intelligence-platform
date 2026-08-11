@@ -16,16 +16,28 @@ dependencies = [
   "pydantic-settings>=2.7,<3",
   "rapidfuzz>=3.9,<4",
   "rank-bm25>=0.2,<1",
-  "spacy>=3.8,<4",
   "uvicorn[standard]>=0.34,<1",
 ]
 
+# Heavy NLP/retrieval dependencies are extras so the API container stays slim;
+# the pinned model wheel makes installs reproducible (spacy download is not).
 [project.optional-dependencies]
+nlp = [
+  "spacy>=3.8,<4",
+  "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
+]
+retrieval = [
+  "sentence-transformers>=3.3,<6",
+  "numpy>=1.26,<3",
+]
 dev = [
   "mypy>=1.14,<2",
   "pytest>=8,<10",
   "pytest-cov>=6,<8",
   "ruff>=0.12,<1",
+]
+all = [
+  "compliance-intelligence-platform[nlp,retrieval,dev]",
 ]
 
 [project.scripts]
@@ -37,6 +49,9 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "--strict-markers"
+markers = [
+  "requires_models: needs the [nlp]/[retrieval] extras and their models installed",
+]
 
 [tool.ruff]
 line-length = 100
@@ -48,6 +63,6 @@ strict = true
 packages = ["compliance_intelligence"]
 
 [[tool.mypy.overrides]]
-module = ["defusedxml.*"]
+module = ["defusedxml.*", "rank_bm25", "sentence_transformers.*", "spacy.*", "en_core_web_sm"]
 ignore_missing_imports = true
 

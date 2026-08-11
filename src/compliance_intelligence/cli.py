@@ -9,6 +9,8 @@ from pathlib import Path
 
 from compliance_intelligence import __version__
 from compliance_intelligence.config import Settings
+from compliance_intelligence.corpus.federal_register import ingest_corpus
+from compliance_intelligence.corpus.store import load_corpus
 from compliance_intelligence.domain.models import ScreeningQuery, ScreeningRun
 from compliance_intelligence.ingestion import ofac, un
 from compliance_intelligence.ingestion.base import SourceAdapter
@@ -47,6 +49,19 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     batch.add_argument("--input", required=True, type=Path)
     batch.add_argument("--output-dir", required=True, type=Path)
+
+    corpus_ingest = subparsers.add_parser(
+        "corpus-ingest", help="Fetch the Federal Register notice corpus"
+    )
+    corpus_ingest.add_argument("--count", type=int, default=200)
+
+    search = subparsers.add_parser("search", help="Search the ingested corpus")
+    search.add_argument("--query", required=True)
+    search.add_argument("--mode", choices=("bm25", "dense", "hybrid"), default="bm25")
+    search.add_argument("--limit", type=int, default=10)
+
+    extract = subparsers.add_parser("extract", help="Extract entities from a text file")
+    extract.add_argument("--file", required=True, type=Path)
 
     return parser
 
@@ -167,6 +182,77 @@ def _run_screen_batch(input_path: Path, output_dir: Path, app_settings: Settings
     return 0
 
 
+def _run_corpus_ingest(count: int, app_settings: Settings) -> int:
+    document_count, sha256 = ingest_corpus(
+        app_settings.data_directory / "raw",
+        app_settings.corpus_directory / "corpus.jsonl",
+        app_settings.data_directory / "source-manifest.json",
+        count,
+    )
+    print(f"documents={document_count}")
+    print(f"sha256={sha256}")
+    print(f"corpus={app_settings.corpus_directory / 'corpus.jsonl'}")
+    return 0
+
+
+def _run_search(query: str, mode: str, limit: int, app_settings: Settings) -> int:
+    from compliance_intelligence.retrieval.dense import DenseIndex
+    from compliance_intelligence.retrieval.hybrid import reciprocal_rank_fusion
+    from compliance_intelligence.retrieval.index import RetrievalIndex
+
+    corpus_path = app_settings.corpus_directory / "corpus.jsonl"
+    if not corpus_path.exists():
+        print(
+            "No corpus is ingested; run 'compliance-intelligence corpus-ingest' first.",
+            file=sys.stderr,
+        )
+        return 1
+    documents = [
+        {"document_id": document.doc_id, "title": document.title, "text": document.text}
+        for document in load_corpus(corpus_path)
+    ]
+    try:
+        if mode == "bm25":
+            index = RetrievalIndex()
+            index.build(documents)
+            hits = index.search(query, limit)
+        elif mode == "dense":
+            dense = DenseIndex(app_settings.corpus_directory)
+            dense.build(documents)
+            hits = dense.search(query, limit)
+        else:
+            index = RetrievalIndex()
+            index.build(documents)
+            dense = DenseIndex(app_settings.corpus_directory)
+            dense.build(documents)
+            hits = reciprocal_rank_fusion(
+                [index.search(query, limit * 2), dense.search(query, limit * 2)], limit
+            )
+    except RuntimeError as error:
+        print(str(error), file=sys.stderr)
+        return 1
+    print(f"query={query}")
+    print(f"mode={mode}")
+    for rank, hit in enumerate(hits, start=1):
+        print(f"  {rank}. [{hit.score}] {hit.document_id} — {hit.title}")
+    return 0
+
+
+def _run_extract(file: Path, app_settings: Settings) -> int:
+    from compliance_intelligence.nlp.extractor import EntityExtractor
+
+    try:
+        entities = EntityExtractor().extract(file.read_text(encoding="utf-8"))
+    except RuntimeError as error:
+        print(str(error), file=sys.stderr)
+        return 1
+    print(f"file={file}")
+    print(f"entities={len(entities)}")
+    for entity in entities:
+        print(f"  {entity.label}: {entity.text!r} [{entity.start}:{entity.end}] {entity.rule_or_model}")
+    return 0
+
+
 def main(argv: list[str] | None = None, app_settings: Settings | None = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
@@ -180,5 +266,11 @@ def main(argv: list[str] | None = None, app_settings: Settings | None = None) ->
         return _run_screen(args.name, tuple(args.countries), args.output_dir, configured)
     if args.command == "screen-batch":
         return _run_screen_batch(args.input, args.output_dir, configured)
+    if args.command == "corpus-ingest":
+        return _run_corpus_ingest(args.count, configured)
+    if args.command == "search":
+        return _run_search(args.query, args.mode, args.limit, configured)
+    if args.command == "extract":
+        return _run_extract(args.file, configured)
     parser.print_help()
     return 0

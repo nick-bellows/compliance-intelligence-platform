@@ -22,6 +22,17 @@
       "retrieved_at_utc": "2026-08-11T02:25:09.558248+00:00",
       "sha256": "b1302ce4838d065fbf65b9bafca3474bcfff528d54be8b4fef808519f4f5adb6",
       "record_count": 1011
+    },
+    {
+      "source_id": "federal_register_corpus",
+      "display_name": "Federal Register OFAC notices (NLP/retrieval corpus)",
+      "status": "active",
+      "authoritative_url": "https://www.federalregister.gov/api/v1/documents.json",
+      "format": "jsonl",
+      "terms_note": "Federal Register OFAC notices retrieved via the federalregister.gov API; U.S. federal government works, public domain (17 U.S.C. 105).",
+      "retrieved_at_utc": "2026-08-11T02:41:04.639857+00:00",
+      "sha256": "21919ff703472fd234fb1e333adb21309eb3e9331516d92de32fcd9c6d4bab45",
+      "record_count": 200
     }
   ]
 }

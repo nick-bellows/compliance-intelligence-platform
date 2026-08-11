@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-08-11T02:35:24.802951+00:00",
+  "generated_at_utc": "2026-08-11T02:45:42.526780+00:00",
   "scorer_version": "rapidfuzz-ratio-tokensort-v2",
   "thresholds_version": "evaluated-2026.08-v2",
   "cases_file": "eval\\data\\matching_cases.csv",

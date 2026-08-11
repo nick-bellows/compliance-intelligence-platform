@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     data_directory: Path = Path("data")
     output_directory: Path = Path("output")
     snapshot_directory: Path = Path("data/processed/snapshots")
+    corpus_directory: Path = Path("data/processed/corpus")
     allow_synthetic_dataset: bool = False
     minimum_match_score: float = 89.0
     strong_match_score: float = 95.0
