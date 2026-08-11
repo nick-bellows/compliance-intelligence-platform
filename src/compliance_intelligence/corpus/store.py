@@ -23,3 +23,18 @@ def load_corpus(path: Path) -> list[CorpusDocument]:
             if line.strip():
                 documents.append(CorpusDocument(**json.loads(line)))
     return documents
+
+
+_SUPPLEMENTARY_MARKER = "SUPPLEMENTARY INFORMATION"
+
+
+def dense_view(document: CorpusDocument) -> str:
+    """Discriminative text for embedding models with short input windows.
+
+    Federal Register notices share an identical boilerplate header longer than
+    a small embedding model's token window; encoding from the SUPPLEMENTARY
+    INFORMATION section (where designations live) keeps embeddings distinctive.
+    """
+
+    position = document.text.find(_SUPPLEMENTARY_MARKER)
+    return document.text[position:] if position >= 0 else document.text

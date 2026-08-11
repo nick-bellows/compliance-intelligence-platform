@@ -1,0 +1,168 @@
+{
+  "model": "en_core_web_sm",
+  "spacy_version": "3.8.15",
+  "rules_version": "sanctions-rules-v1",
+  "excerpt_count": 22,
+  "gold_span_count": 236,
+  "per_label": {
+    "PERSON": {
+      "tp": 0,
+      "fp": 64,
+      "fn": 44,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "ORG": {
+      "tp": 3,
+      "fp": 66,
+      "fn": 23,
+      "precision": 0.0435,
+      "recall": 0.1154,
+      "f1": 0.0632
+    },
+    "GPE": {
+      "tp": 97,
+      "fp": 10,
+      "fn": 16,
+      "precision": 0.9065,
+      "recall": 0.8584,
+      "f1": 0.8818
+    },
+    "SANCTIONS_PROGRAM": {
+      "tp": 11,
+      "fp": 1,
+      "fn": 15,
+      "precision": 0.9167,
+      "recall": 0.4231,
+      "f1": 0.5789
+    },
+    "LEGAL_AUTHORITY": {
+      "tp": 25,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "VESSEL_ID": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    }
+  },
+  "micro": {
+    "precision": 0.4946,
+    "recall": 0.5847,
+    "f1": 0.5359
+  },
+  "macro": {
+    "precision": 0.6444,
+    "recall": 0.5662,
+    "f1": 0.5873
+  },
+  "error_taxonomy": {
+    "boundary": 31,
+    "label": 10,
+    "missed": 57,
+    "spurious": 141
+  },
+  "error_examples": [
+    {
+      "doc_id": "2026-16153",
+      "kind": "boundary",
+      "label": "PERSON",
+      "text": "AL-SHABBANI, Basheer Abdulkadhim Alwan"
+    },
+    {
+      "doc_id": "2026-16153",
+      "kind": "boundary",
+      "label": "PERSON",
+      "text": "AL-SHABANI, Bashir Abd al Kazim Alwan"
+    },
+    {
+      "doc_id": "2026-16153",
+      "kind": "missed",
+      "label": "PERSON",
+      "text": "ALSHABBANI, Basheer"
+    },
+    {
+      "doc_id": "2026-16153",
+      "kind": "missed",
+      "label": "PERSON",
+      "text": "SHABBAN, Basheer"
+    },
+    {
+      "doc_id": "2026-15996",
+      "kind": "boundary",
+      "label": "PERSON",
+      "text": "ACOSTA HERNANDEZ, Regulo"
+    },
+    {
+      "doc_id": "2026-15996",
+      "kind": "boundary",
+      "label": "PERSON",
+      "text": "ACOSTA HERNANDEZ, Regulo Gilberto"
+    },
+    {
+      "doc_id": "2026-15996",
+      "kind": "missed",
+      "label": "PERSON",
+      "text": "Tobolio"
+    },
+    {
+      "doc_id": "2026-15996",
+      "kind": "label",
+      "label": "GPE",
+      "text": "Sinaloa"
+    },
+    {
+      "doc_id": "2026-15996",
+      "kind": "label",
+      "label": "GPE",
+      "text": "Sinaloa"
+    },
+    {
+      "doc_id": "2026-15996",
+      "kind": "missed",
+      "label": "SANCTIONS_PROGRAM",
+      "text": "ILLICIT-DRUGS-EO14059"
+    },
+    {
+      "doc_id": "2026-15785",
+      "kind": "missed",
+      "label": "PERSON",
+      "text": "DURANSOY, Cagri"
+    },
+    {
+      "doc_id": "2026-15157",
+      "kind": "boundary",
+      "label": "PERSON",
+      "text": "ALVARADO RODRIGUEZ, Martha Alicia"
+    },
+    {
+      "doc_id": "2026-15157",
+      "kind": "missed",
+      "label": "SANCTIONS_PROGRAM",
+      "text": "ILLICIT-DRUGS-EO14059"
+    },
+    {
+      "doc_id": "2026-15157",
+      "kind": "missed",
+      "label": "ORG",
+      "text": "CARTEL DE JALISCO NUEVA GENERACION"
+    },
+    {
+      "doc_id": "2026-14247",
+      "kind": "boundary",
+      "label": "PERSON",
+      "text": "RASHEVSKYI, Dmytro"
+    }
+  ],
+  "generated_at_utc": "2026-08-11T02:54:47.487766+00:00",
+  "annotations_file": "eval\\data\\ner_annotations.jsonl",
+  "annotations_sha256": "1d2a7627cf68edaf93e8bbde538c2a2f0c88e6b1e61ec2d5bfda771865246e7d"
+}

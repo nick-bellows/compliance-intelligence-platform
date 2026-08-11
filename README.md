@@ -88,11 +88,11 @@ The API port is bound to `127.0.0.1`. The container loads snapshots from the rea
 
 ### M2 — NLP and retrieval
 
-- [ ] Select and document a license-clean legal/government corpus.
-- [ ] Implement entity extraction with spaCy plus domain rules.
-- [ ] Define structured records and validation behavior.
-- [ ] Implement BM25 retrieval and a labeled query set.
-- [ ] Report NER precision/recall/F1 and retrieval Recall@k/MRR.
+- [x] Select and document a license-clean legal/government corpus (Federal Register OFAC notices, public domain).
+- [x] Implement entity extraction with spaCy plus domain rules (`extract`; rule/model attribution per span).
+- [x] Define structured records and validation behavior (`CorpusDocument`, corpus jsonl store, manifest entry).
+- [x] Implement BM25 retrieval and a labeled query set — plus dense (MiniLM) and hybrid (RRF) modes beyond the original plan.
+- [x] Report NER precision/recall/F1 and retrieval Recall@k/MRR — see [eval/results/ner_report.md](eval/results/ner_report.md) and [eval/results/retrieval_report.md](eval/results/retrieval_report.md).
 
 ### M3 — Portfolio release
 

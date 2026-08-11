@@ -9,6 +9,8 @@ from compliance_intelligence.retrieval.index import SNIPPET_LENGTH, SearchHit
 MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 EMBEDDINGS_FILE = "embeddings.npy"
 METADATA_FILE = "dense_meta.json"
+# Bump when the encoded input changes; invalidates cached embeddings.
+ENCODER_INPUT_VERSION = "title+dense_text-v2"
 
 
 def _load_sentence_transformer() -> Any:
@@ -59,17 +61,33 @@ class DenseIndex:
         metadata_path = self._cache_directory / METADATA_FILE
         if embeddings_path.exists() and metadata_path.exists():
             metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
-            if metadata.get("model_name") == MODEL_NAME and metadata.get("doc_ids") == doc_ids:
+            if (
+                metadata.get("model_name") == MODEL_NAME
+                and metadata.get("encoder_input") == ENCODER_INPUT_VERSION
+                and metadata.get("doc_ids") == doc_ids
+            ):
                 self._embeddings = np.load(embeddings_path)
                 return
 
         model = self._get_model()
-        texts = [f"{document['title']} {document['text']}" for document in documents]
+        # The model truncates input, so encode the discriminative view when the
+        # caller provides one (see corpus.store.dense_view).
+        texts = [
+            f"{document['title']} {document.get('dense_text') or document['text']}"
+            for document in documents
+        ]
         embeddings = model.encode(texts, normalize_embeddings=True, show_progress_bar=False)
         self._cache_directory.mkdir(parents=True, exist_ok=True)
         np.save(embeddings_path, embeddings)
         metadata_path.write_text(
-            json.dumps({"model_name": MODEL_NAME, "doc_ids": doc_ids}), encoding="utf-8"
+            json.dumps(
+                {
+                    "model_name": MODEL_NAME,
+                    "encoder_input": ENCODER_INPUT_VERSION,
+                    "doc_ids": doc_ids,
+                }
+            ),
+            encoding="utf-8",
         )
         self._embeddings = embeddings
 

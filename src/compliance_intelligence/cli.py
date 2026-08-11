@@ -10,7 +10,7 @@ from pathlib import Path
 from compliance_intelligence import __version__
 from compliance_intelligence.config import Settings
 from compliance_intelligence.corpus.federal_register import ingest_corpus
-from compliance_intelligence.corpus.store import load_corpus
+from compliance_intelligence.corpus.store import dense_view, load_corpus
 from compliance_intelligence.domain.models import ScreeningQuery, ScreeningRun
 from compliance_intelligence.ingestion import ofac, un
 from compliance_intelligence.ingestion.base import SourceAdapter
@@ -208,7 +208,12 @@ def _run_search(query: str, mode: str, limit: int, app_settings: Settings) -> in
         )
         return 1
     documents = [
-        {"document_id": document.doc_id, "title": document.title, "text": document.text}
+        {
+            "document_id": document.doc_id,
+            "title": document.title,
+            "text": document.text,
+            "dense_text": dense_view(document),
+        }
         for document in load_corpus(corpus_path)
     ]
     try:

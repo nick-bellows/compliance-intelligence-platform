@@ -1,0 +1,25 @@
+query_id,query,relevant_document_ids,notes
+q001,designations linked to the Jalisco New Generation Cartel,2025-11533|2025-15559|2026-03803|2026-13303|2026-13494|2026-15157,anchor: cartel de jalisco nueva generacion (query uses English translation)
+q002,Sinaloa Cartel related designations,2025-05744|2025-11018|2025-14703|2026-03941|2026-10518|2026-15996,anchor: sinaloa cartel
+q003,Rapid Support Forces commander in Sudan,2026-03966,anchor: rapid support forces
+q004,sanctioned persons with cryptocurrency wallet addresses,2025-05096|2025-06372|2025-15454|2025-15668|2025-19347|2025-19924|2025-20573|2025-20708|2026-02217|2026-05114|2026-10518|2026-14247,anchor: digital currency address (query avoids the document wording)
+q005,companies operating in Iran's petroleum sector,2025-06406|2025-12724|2025-23583|2026-03988|2026-09251|2026-10259,anchor: petroleum sector of the iranian economy
+q006,designations concerning the situation in Nicaragua,2026-04102|2026-07699,anchor: situation in nicaragua
+q007,persons linked to Hamas,2026-05454|2026-13059,anchor: hamas
+q008,Hizballah financial sanctions,2025-09055|2026-02913,anchor: hizballah
+q009,North Korea sanctions regulations designations,2025-05096|2025-15694|2025-19273|2025-19924|2026-05114,anchor: north korea sanctions regulations
+q010,persons contributing to the conflict in the Congo,2025-03166|2026-08672|2026-13278,anchor: conflict in the democratic republic of the congo
+q011,sanctions related to the situation in Burma,2025-15694|2025-17430|2025-19273|2026-04652,anchor: situation in burma
+q012,designated casinos and gambling businesses,2025-03238|2025-17430|2025-20236|2026-07425,anchor: casino
+q013,shipping companies identified by IMO number,2025-01433|2025-07554|2025-12724|2025-13215|2025-14109|2025-23583|2025-24067|2026-00014|2026-01332|2026-02913|2026-03988|2026-04681|2026-09251|2026-10259,anchor: identification number imo
+q014,Houthi related designations,2025-06372|2025-07554|2025-14109|2026-01137,anchors: ansarallah; houthi
+q015,malicious cyber activity sanctions,2025-05096|2025-12471|2025-12906|2025-15668|2025-19924|2025-20573|2026-04217|2026-04652,anchor: malicious cyber-enabled activities
+q016,removal of a weapons of mass destruction proliferator,2026-15785,anchor: weapons of mass destruction proliferators
+q017,counter-narcotics designations under Executive Order 14059,2025-03722|2025-05744|2025-06449|2025-06770|2025-09492|2025-10108|2025-10572|2025-11018|2025-11533|2025-15113|2025-15454|2025-15559|2025-16264|2025-18383|2025-19347|2025-20152|2025-20708|2025-24067|2026-01661|2026-03803|2026-03941|2026-05225|2026-07425|2026-10518|2026-13494|2026-15157|2026-15996,anchor: e.o. 14059 (broad query; 27 relevant docs)
+q018,Venezuela related sanctions actions,2025-09439|2025-23778|2025-24067|2026-00014|2026-04681,anchors: venezuela-eo13850; government of venezuela
+q019,designations involving Syria,2025-13277|2025-16906|2025-20300|2025-23587|2026-13059,anchor: syria
+q020,gold refinery designation in Rwanda,2026-13278,anchor: gold refinery
+q021,blocked aircraft,2025-20299|2025-20952|2026-07994|2026-16153,anchor: aircraft
+q022,designated companies registered in Hong Kong,2025-01433|2025-01499|2025-02470|2025-04526|2025-08227|2025-10808|2025-15951|2025-17430|2025-20236|2025-20971|2025-24067|2026-00014|2026-03637|2026-09251|2026-10259|2026-14706,anchor: hong kong
+q023,entities incorporated in the Marshall Islands,2025-01433|2025-12724|2025-14109|2025-23583|2025-24067|2026-00014|2026-01137|2026-03988|2026-04681|2026-09251|2026-10259,anchor: marshall islands
+q024,designations under the Russia sanctions program,2025-01426|2025-01433|2025-01578|2025-02470|2025-13215|2025-15668|2025-15951|2025-23587|2026-01060|2026-06723|2026-13303,anchor: russia-eo14024
