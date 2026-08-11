@@ -22,8 +22,8 @@ class Settings(BaseSettings):
     output_directory: Path = Path("output")
     snapshot_directory: Path = Path("data/processed/snapshots")
     allow_synthetic_dataset: bool = False
-    minimum_match_score: float = 75.0
-    strong_match_score: float = 90.0
+    minimum_match_score: float = 89.0
+    strong_match_score: float = 95.0
     exact_match_score: float = 99.5
 
     def matching_thresholds(self) -> MatchingThresholds:

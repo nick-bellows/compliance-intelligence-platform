@@ -1,0 +1,164 @@
+case_id,query_name,candidate_name,expected_match,case_type,split,notes
+alias-001,Acme Galactic Holdings,Acme Holdings,true,alias,holdout,token-drop alias
+alias-002,Contoso Maritime Group,CM Group,true,alias,tune,abbreviation alias
+alias-003,Fabrikam Industrial Works,FI Works,true,alias,holdout,abbreviation alias
+alias-004,Northwind Shipping Company,NS Company,true,alias,tune,abbreviation alias
+alias-005,Globex Petroleum Trading,Globex Trading,true,alias,tune,token-drop alias
+alias-006,Initech Financial Services,Initech Services,true,alias,tune,token-drop alias
+alias-007,Umbrella Logistics Partners,Umbrella Partners,true,alias,holdout,token-drop alias
+alias-008,Stark Metallurgy Group,SM Group,true,alias,holdout,abbreviation alias
+alias-009,Sirius Cybernetics Group,Sirius Group,true,alias,tune,token-drop alias
+alias-010,Duff Beverage Distribution,DB Distribution,true,alias,tune,abbreviation alias
+alias-011,Aperture Optics Laboratories,AO Laboratories,true,alias,holdout,abbreviation alias
+alias-012,Black Mesa Transit Authority,BMT Authority,true,alias,tune,abbreviation alias
+alias-013,Massive Dynamic Ventures,MD Ventures,true,alias,tune,abbreviation alias
+alias-014,Veridian Dynamics Group,Veridian Group,true,alias,tune,token-drop alias
+alias-015,Gringotts Bullion Reserve,GB Reserve,true,alias,tune,abbreviation alias
+alias-016,Krusty Brand Merchandising,Krusty Merchandising,true,alias,holdout,token-drop alias
+ambiguous_near_neighbor-001,Acme Galactic Holdings,Acme Galactic Holdings BV,true,ambiguous_near_neighbor,holdout,"foreign-suffix variant, plausibly the same entity"
+ambiguous_near_neighbor-002,Planet Express Cargo,Planet Express Cartage,true,ambiguous_near_neighbor,tune,"near-synonym token, plausibly the same entity"
+ambiguous_near_neighbor-003,Monarch Aeronautics Group,Monarch Aquatics Group,false,ambiguous_near_neighbor,tune,different industry despite shared brand token
+ambiguous_near_neighbor-004,Duff Beverage Distribution,Duff Beverage Distributors,true,ambiguous_near_neighbor,holdout,inflection of the same trading name
+ambiguous_near_neighbor-005,Hooli Data Holdings,Hooli Cloud Holdings,false,ambiguous_near_neighbor,tune,different line of business under a shared brand
+ambiguous_near_neighbor-006,Krusty Brand Merchandising,Krusty Brand Merchandise,true,ambiguous_near_neighbor,tune,inflection of the same trading name
+ambiguous_near_neighbor-007,Veridian Dynamics Group,Viridian Dynamics Group,true,ambiguous_near_neighbor,holdout,single-letter spelling variant of the same name
+ambiguous_near_neighbor-008,Weyland Mining Consortium,Weyland Mining Corp,true,ambiguous_near_neighbor,holdout,suffix variant of the same name
+ambiguous_near_neighbor-009,Gringotts Bullion Reserve,Gringotts Bullion Exchange,false,ambiguous_near_neighbor,tune,different institution type sharing a brand
+ambiguous_near_neighbor-010,Soylent Nutrition Corporation,Soylent Nutrition Cooperative,false,ambiguous_near_neighbor,tune,different legal form suggests a distinct entity
+ambiguous_near_neighbor-011,Ingrid Falskesen,Ingrid Falskesdottir,false,ambiguous_near_neighbor,holdout,different patronymic surname
+ambiguous_near_neighbor-012,Petra Novakova Vzorek,Petra Novak Vzorek,true,ambiguous_near_neighbor,tune,surname inflection variant of the same person
+ambiguous_near_neighbor-013,Diego Ejemplar Santos,Diego Ejemplar-Santos,true,ambiguous_near_neighbor,tune,hyphenation variant of the same person
+ambiguous_near_neighbor-014,Amina Misalova,Amina Misalov,true,ambiguous_near_neighbor,holdout,gendered surname inflection of the same person
+ambiguous_near_neighbor-015,Olusegun Sampleton,Olusegun Sampson,false,ambiguous_near_neighbor,tune,different surname beyond spelling variation
+exact-001,Acme Galactic Holdings,Acme Galactic Holdings,true,exact,holdout,identical strings
+exact-002,Northwind Shipping Company,Northwind Shipping Company,true,exact,holdout,identical strings
+exact-003,Umbrella Logistics Partners,Umbrella Logistics Partners,true,exact,holdout,identical strings
+exact-004,Tyrell Agritech Corporation,Tyrell Agritech Corporation,true,exact,tune,identical strings
+exact-005,Vandelay Import Export,Vandelay Import Export,true,exact,holdout,identical strings
+exact-006,Oscorp Materials Research,Oscorp Materials Research,true,exact,holdout,identical strings
+exact-007,Black Mesa Transit Authority,Black Mesa Transit Authority,true,exact,tune,identical strings
+exact-008,Massive Dynamic Ventures,Massive Dynamic Ventures,true,exact,tune,identical strings
+exact-009,Gringotts Bullion Reserve,Gringotts Bullion Reserve,true,exact,tune,identical strings
+exact-010,Krusty Brand Merchandising,Krusty Brand Merchandising,true,exact,tune,identical strings
+exact-011,Jonathan Q Testman,Jonathan Q Testman,true,exact,tune,identical strings
+exact-012,Chen Jiawei Example,Chen Jiawei Example,true,exact,tune,identical strings
+exact-013,Petra Novakova Vzorek,Petra Novakova Vzorek,true,exact,tune,identical strings
+hard_negative-001,Acme Galactic Holdings,Zenith Galactic Partners,false,hard_negative,tune,distinct entities sharing generic tokens
+hard_negative-002,Contoso Maritime Group,Fabrikam Maritime Group,false,hard_negative,tune,distinct entities sharing generic tokens
+hard_negative-003,Northwind Shipping Company,Southgale Shipping Company,false,hard_negative,holdout,distinct entities sharing generic tokens
+hard_negative-004,Globex Petroleum Trading,Meridian Petroleum Trading,false,hard_negative,holdout,distinct entities sharing generic tokens
+hard_negative-005,Initech Financial Services,Veridian Financial Services,false,hard_negative,holdout,distinct entities sharing generic tokens
+hard_negative-006,Umbrella Logistics Partners,Parasol Freight Partners,false,hard_negative,tune,distinct entities sharing generic tokens
+hard_negative-007,Stark Metallurgy Group,Sterner Alloy Group,false,hard_negative,tune,distinct entities sharing generic tokens
+hard_negative-008,Wayne Chemical Industries,Grayson Chemical Industries,false,hard_negative,holdout,distinct entities sharing generic tokens
+hard_negative-009,Tyrell Agritech Corporation,Rosen Agritech Corporation,false,hard_negative,holdout,distinct entities sharing generic tokens
+hard_negative-010,Wonka Confectionery Exports,Slugworth Confectionery Exports,false,hard_negative,holdout,distinct entities sharing generic tokens
+hard_negative-011,Sirius Cybernetics Group,Polaris Cybernetics Group,false,hard_negative,holdout,distinct entities sharing generic tokens
+hard_negative-012,Vandelay Import Export,Pennypacker Import Export,false,hard_negative,holdout,distinct entities sharing generic tokens
+hard_negative-013,Prestige Worldwide Freight,Prestige Interplanetary Catering,false,hard_negative,tune,distinct entities sharing generic tokens
+hard_negative-014,Duff Beverage Distribution,Fudd Beverage Distribution,false,hard_negative,tune,distinct entities sharing generic tokens
+hard_negative-015,Oscorp Materials Research,Roxxon Materials Research,false,hard_negative,tune,distinct entities sharing generic tokens
+hard_negative-016,Cyberdyne Precision Systems,Omni Precision Systems,false,hard_negative,tune,distinct entities sharing generic tokens
+hard_negative-017,Aperture Optics Laboratories,Aperture Marine Salvage,false,hard_negative,tune,distinct entities sharing generic tokens
+hard_negative-018,Black Mesa Transit Authority,White Butte Transit Authority,false,hard_negative,tune,distinct entities sharing generic tokens
+hard_negative-019,Hooli Data Holdings,Endframe Data Holdings,false,hard_negative,holdout,distinct entities sharing generic tokens
+hard_negative-020,Massive Dynamic Ventures,Colossal Static Ventures,false,hard_negative,tune,distinct entities sharing generic tokens
+hard_negative-021,Jonathan Q Testman,Jonathan Q Bencher,false,hard_negative,tune,distinct entities sharing generic tokens
+hard_negative-022,Maria Ficticia Delgado,Lucia Ficticia Delgado,false,hard_negative,tune,distinct entities sharing generic tokens
+hard_negative-023,Viktor Primerov,Viktor Obraztsov,false,hard_negative,tune,distinct entities sharing generic tokens
+hard_negative-024,Chen Jiawei Example,Chen Zhihao Example,false,hard_negative,holdout,distinct entities sharing generic tokens
+hard_negative-025,Rashid Al Mithali,Tariq Al Mithali,false,hard_negative,tune,distinct entities sharing generic tokens
+legal_suffix-001,Acme Galactic Holdings,Acme Galactic Holdings Ltd,true,legal_suffix,holdout,suffix added: Ltd
+legal_suffix-002,Initech Financial Services,Initech Financial Services S.A.,true,legal_suffix,holdout,suffix added: S.A.
+legal_suffix-003,Wayne Chemical Industries,Wayne Chemical Industries S.A.,true,legal_suffix,tune,suffix added: S.A.
+legal_suffix-004,Tyrell Agritech Corporation,Tyrell Agritech Ltd,true,legal_suffix,holdout,suffix swap: Corporation -> Ltd
+legal_suffix-005,Wonka Confectionery Exports,Wonka Confectionery Exports GmbH,true,legal_suffix,tune,suffix added: GmbH
+legal_suffix-006,Vandelay Import Export,Vandelay Import Export S.A.,true,legal_suffix,holdout,suffix added: S.A.
+legal_suffix-007,Prestige Worldwide Freight,Prestige Worldwide Freight Ltd,true,legal_suffix,tune,suffix added: Ltd
+legal_suffix-008,Oscorp Materials Research,Oscorp Materials Research S.A.,true,legal_suffix,tune,suffix added: S.A.
+legal_suffix-009,Cyberdyne Precision Systems,Cyberdyne Precision Systems Inc,true,legal_suffix,holdout,suffix added: Inc
+legal_suffix-010,Hooli Data Holdings,Hooli Data Holdings Group,true,legal_suffix,tune,suffix added: Group
+legal_suffix-011,Veridian Dynamics Group,Veridian Dynamics Co,true,legal_suffix,tune,suffix swap: Group -> Co
+legal_suffix-012,Weyland Mining Consortium,Weyland Mining Group,true,legal_suffix,holdout,suffix swap: Consortium -> Group
+legal_suffix-013,Zorin Industries International,Zorin Industries International Corporation,true,legal_suffix,tune,suffix added: Corporation
+legal_suffix-014,Monarch Aeronautics Group,Monarch Aeronautics Co,true,legal_suffix,tune,suffix swap: Group -> Co
+misspelling-001,Acme Galactic Holdings,Amce Galactic Holdings,true,misspelling,tune,misspelling (transpose)
+misspelling-002,Northwind Shipping Company,Northwnd Shipping Company,true,misspelling,holdout,misspelling (drop)
+misspelling-003,Globex Petroleum Trading,Globex Petroleum Traidng,true,misspelling,tune,misspelling (transpose)
+misspelling-004,Umbrella Logistics Partners,Umrella Logistics Partners,true,misspelling,holdout,misspelling (drop)
+misspelling-005,Stark Metallurgy Group,Stark Metallurgy rGoup,true,misspelling,tune,misspelling (transpose)
+misspelling-006,Wayne Chemical Industries,Wane Chemical Industries,true,misspelling,tune,misspelling (drop)
+misspelling-007,Tyrell Agritech Corporation,Tyrel Agritech Corporation,true,misspelling,holdout,misspelling (drop)
+misspelling-008,Wonka Confectionery Exports,Wnoka Confectionery Exports,true,misspelling,tune,misspelling (transpose)
+misspelling-009,Sirius Cybernetics Group,Sirius Cybernetcs Group,true,misspelling,holdout,misspelling (drop)
+misspelling-010,Vandelay Import Export,Vandlay Import Export,true,misspelling,tune,misspelling (drop)
+misspelling-011,Prestige Worldwide Freight,Pestige Worldwide Freight,true,misspelling,holdout,misspelling (drop)
+misspelling-012,Duff Beverage Distribution,Dfuf Beverage Distribution,true,misspelling,tune,misspelling (transpose)
+misspelling-013,Oscorp Materials Research,Oscorp Materials Reearch,true,misspelling,tune,misspelling (drop)
+misspelling-014,Cyberdyne Precision Systems,Cyberdyne Precision Syystems,true,misspelling,holdout,misspelling (double)
+misspelling-015,Aperture Optics Laboratories,Aperture Opptics Laboratories,true,misspelling,tune,misspelling (double)
+misspelling-016,Hooli Data Holdings,Hooli Data Holdinngs,true,misspelling,tune,misspelling (double)
+misspelling-017,Pied Piper Compression Labs,Pied Pper Compression Labs,true,misspelling,tune,misspelling (drop)
+misspelling-018,Massive Dynamic Ventures,Massive Dnyamic Ventures,true,misspelling,holdout,misspelling (transpose)
+misspelling-019,Soylent Nutrition Corporation,Soylent Nutrition Coporation,true,misspelling,holdout,misspelling (drop)
+misspelling-020,Gringotts Bullion Reserve,Girngotts Bullion Reserve,true,misspelling,tune,misspelling (transpose)
+misspelling-021,Weyland Mining Consortium,Weyland Mining Consoortium,true,misspelling,tune,misspelling (double)
+misspelling-022,Zorin Industries International,Zorin Industries Internaational,true,misspelling,tune,misspelling (double)
+misspelling-023,Krusty Brand Merchandising,Krusty Brand Merchandiising,true,misspelling,holdout,misspelling (double)
+misspelling-024,Planet Express Cargo,Planet Express Crgo,true,misspelling,holdout,misspelling (drop)
+misspelling-025,Monarch Aeronautics Group,Monarch Aernautics Group,true,misspelling,holdout,misspelling (drop)
+misspelling-026,Chen Jiawei Example,Chen Jiawei Exaample,true,misspelling,tune,misspelling (double)
+misspelling-027,Olusegun Sampleton,Oluseggun Sampleton,true,misspelling,tune,misspelling (double)
+misspelling-028,Ingrid Falskesen,Ingrid Falkesen,true,misspelling,tune,misspelling (drop)
+misspelling-029,Rashid Al Mithali,Rsahid Al Mithali,true,misspelling,tune,misspelling (transpose)
+misspelling-030,Diego Ejemplar Santos,Diiego Ejemplar Santos,true,misspelling,holdout,misspelling (double)
+token_reorder-001,Contoso Maritime Group,Group Contoso Maritime,true,token_reorder,tune,token reorder
+token_reorder-002,Fabrikam Industrial Works,Works Industrial Fabrikam,true,token_reorder,tune,token reorder
+token_reorder-003,Globex Petroleum Trading,Trading Globex Petroleum,true,token_reorder,holdout,token reorder
+token_reorder-004,Initech Financial Services,Initech Services Financial,true,token_reorder,tune,token reorder
+token_reorder-005,Umbrella Logistics Partners,Umbrella Partners Logistics,true,token_reorder,holdout,token reorder
+token_reorder-006,Stark Metallurgy Group,Group Metallurgy Stark,true,token_reorder,holdout,token reorder
+token_reorder-007,Wonka Confectionery Exports,Wonka Exports Confectionery,true,token_reorder,tune,token reorder
+token_reorder-008,Sirius Cybernetics Group,Group Cybernetics Sirius,true,token_reorder,tune,token reorder
+token_reorder-009,Vandelay Import Export,Export Vandelay Import,true,token_reorder,holdout,token reorder
+token_reorder-010,Duff Beverage Distribution,Beverage Duff Distribution,true,token_reorder,holdout,token reorder
+token_reorder-011,Cyberdyne Precision Systems,Cyberdyne Systems Precision,true,token_reorder,tune,token reorder
+token_reorder-012,Aperture Optics Laboratories,Optics Laboratories Aperture,true,token_reorder,tune,token reorder
+token_reorder-013,Black Mesa Transit Authority,Transit Black Mesa Authority,true,token_reorder,tune,token reorder
+token_reorder-014,Hooli Data Holdings,Holdings Data Hooli,true,token_reorder,tune,token reorder
+token_reorder-015,Pied Piper Compression Labs,Labs Pied Compression Piper,true,token_reorder,holdout,token reorder
+token_reorder-016,Soylent Nutrition Corporation,Corporation Nutrition Soylent,true,token_reorder,tune,token reorder
+token_reorder-017,Gringotts Bullion Reserve,Gringotts Reserve Bullion,true,token_reorder,tune,token reorder
+token_reorder-018,Weyland Mining Consortium,Mining Weyland Consortium,true,token_reorder,tune,token reorder
+token_reorder-019,Zorin Industries International,International Industries Zorin,true,token_reorder,tune,token reorder
+token_reorder-020,Krusty Brand Merchandising,Merchandising Krusty Brand,true,token_reorder,tune,token reorder
+token_reorder-021,Planet Express Cargo,Express Planet Cargo,true,token_reorder,holdout,token reorder
+token_reorder-022,Jonathan Q Testman,Testman Jonathan Q,true,token_reorder,holdout,token reorder
+token_reorder-023,Maria Ficticia Delgado,Ficticia Maria Delgado,true,token_reorder,tune,token reorder
+token_reorder-024,Viktor Primerov,Primerov Viktor,true,token_reorder,tune,token reorder
+token_reorder-025,Amina Misalova,Misalova Amina,true,token_reorder,tune,token reorder
+token_reorder-026,Chen Jiawei Example,Example Jiawei Chen,true,token_reorder,holdout,token reorder
+token_reorder-027,Ingrid Falskesen,Falskesen Ingrid,true,token_reorder,holdout,token reorder
+token_reorder-028,Petra Novakova Vzorek,Novakova Petra Vzorek,true,token_reorder,holdout,token reorder
+transliteration-001,Contoso Maritime Group,Contoso Maritíme Gróup,true,transliteration,tune,diacritic variant
+transliteration-002,Fabrikam Industrial Works,Fábrikam Indüstrial Works,true,transliteration,holdout,diacritic variant
+transliteration-003,Northwind Shipping Company,Northwind Shípping Company,true,transliteration,holdout,diacritic variant
+transliteration-004,Wayne Chemical Industries,Wayné Chemical Induštries,true,transliteration,holdout,diacritic variant
+transliteration-005,Tyrell Agritech Corporation,Tyrell Agritech Corpóratión,true,transliteration,holdout,diacritic variant
+transliteration-006,Prestige Worldwide Freight,Prestígé Worldwide Freight,true,transliteration,holdout,diacritic variant
+transliteration-007,Oscorp Materials Research,Ósçorp Máterials Research,true,transliteration,tune,diacritic variant
+transliteration-008,Black Mesa Transit Authority,Black Mésa Transít Áuthority,true,transliteration,tune,diacritic variant
+transliteration-009,Pied Piper Compression Labs,Pied Piper Cómpréssion Lábs,true,transliteration,tune,diacritic variant
+transliteration-010,Massive Dynamic Ventures,Massíve Dynamíc Véntures,true,transliteration,tune,diacritic variant
+transliteration-011,Veridian Dynamics Group,Veridiáñ Dyñamics Group,true,transliteration,tune,diacritic variant
+transliteration-012,Soylent Nutrition Corporation,Soylent Nutritioñ Corporátión,true,transliteration,tune,diacritic variant
+transliteration-013,Planet Express Cargo,Plañét Expréss Cargo,true,transliteration,tune,diacritic variant
+transliteration-014,Monarch Aeronautics Group,Monárch Aéronautícs Group,true,transliteration,holdout,diacritic variant
+transliteration-015,Jonathan Q Testman,Jóñathan Q Téstman,true,transliteration,tune,diacritic variant
+transliteration-016,Maria Ficticia Delgado,Mária Fictícia Delgádo,true,transliteration,tune,diacritic variant
+transliteration-017,Viktor Primerov,Víktór Primerov,true,transliteration,holdout,diacritic variant
+transliteration-018,Amina Misalova,Amíña Misalová,true,transliteration,holdout,diacritic variant
+transliteration-019,Olusegun Sampleton,Oluségün Šampleton,true,transliteration,tune,diacritic variant
+transliteration-020,Rashid Al Mithali,Rašhid Ál Mithali,true,transliteration,holdout,diacritic variant
+transliteration-021,Petra Novakova Vzorek,Petra Novaková Vzorek,true,transliteration,tune,diacritic variant
+transliteration-022,Diego Ejemplar Santos,Diego Ejemplar Sántós,true,transliteration,tune,diacritic variant
