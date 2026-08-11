@@ -9,6 +9,7 @@ description = "Auditable sanctions screening and public-document intelligence po
 readme = "README.md"
 requires-python = ">=3.12,<3.14"
 dependencies = [
+  "defusedxml>=0.7,<1",
   "fastapi>=0.115,<1",
   "httpx>=0.28,<1",
   "pydantic>=2.10,<3",
@@ -45,4 +46,8 @@ target-version = "py312"
 python_version = "3.12"
 strict = true
 packages = ["compliance_intelligence"]
+
+[[tool.mypy.overrides]]
+module = ["defusedxml.*"]
+ignore_missing_imports = true
 

@@ -4,25 +4,24 @@
     {
       "source_id": "ofac_primary",
       "display_name": "OFAC official sanctions data",
-      "status": "planned",
-      "authoritative_url": "INPUT_REQUIRED_AFTER_LIVE_VERIFICATION",
-      "format": "INPUT_REQUIRED",
-      "terms_note": "INPUT_REQUIRED",
-      "retrieved_at_utc": null,
-      "sha256": null,
-      "record_count": null
+      "status": "active",
+      "authoritative_url": "https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/SDN.XML",
+      "format": "xml",
+      "terms_note": "OFAC Specially Designated Nationals list published by the U.S. Department of the Treasury; U.S. federal government work, public domain (17 U.S.C. 105).",
+      "retrieved_at_utc": "2026-08-11T02:25:06.611052+00:00",
+      "sha256": "ac00228a68345e5c0d7174713cf97e5d5a8efe7cec5c2f540ed87106f49f7474",
+      "record_count": 19199
     },
     {
-      "source_id": "secondary_official",
-      "display_name": "Second official sanctions source",
-      "status": "planned",
-      "authoritative_url": "INPUT_REQUIRED_AFTER_SELECTION",
-      "format": "INPUT_REQUIRED",
-      "terms_note": "INPUT_REQUIRED",
-      "retrieved_at_utc": null,
-      "sha256": null,
-      "record_count": null
+      "source_id": "un_consolidated",
+      "display_name": "UN Security Council Consolidated List",
+      "status": "active",
+      "authoritative_url": "https://scsanctions.un.org/resources/xml/en/consolidated.xml",
+      "format": "xml",
+      "terms_note": "UN Security Council Consolidated List, openly published by the United Nations for sanctions-compliance use; see https://www.un.org/en/about-us/terms-of-use. Endpoint serves GET only (HEAD returns 404).",
+      "retrieved_at_utc": "2026-08-11T02:25:09.558248+00:00",
+      "sha256": "b1302ce4838d065fbf65b9bafca3474bcfff528d54be8b4fef808519f4f5adb6",
+      "record_count": 1011
     }
   ]
 }
-

@@ -7,6 +7,9 @@ from pathlib import Path
 from compliance_intelligence import __version__
 from compliance_intelligence.config import Settings
 from compliance_intelligence.domain.models import ScreeningQuery
+from compliance_intelligence.ingestion import ofac, un
+from compliance_intelligence.ingestion.base import SourceAdapter
+from compliance_intelligence.ingestion.manifest import mark_source_active
 from compliance_intelligence.ingestion.store import load_screening_dataset, save_snapshot
 from compliance_intelligence.ingestion.synthetic import SyntheticFixtureAdapter
 from compliance_intelligence.matching.engine import screen_records
@@ -25,7 +28,7 @@ def _build_parser() -> argparse.ArgumentParser:
     subparsers.add_parser("version", help="Print the package version")
 
     ingest = subparsers.add_parser("ingest", help="Fetch a source and save a verified snapshot")
-    ingest.add_argument("--source", required=True, choices=("synthetic",))
+    ingest.add_argument("--source", required=True, choices=("synthetic", "ofac", "un"))
 
     screen = subparsers.add_parser("screen", help="Screen one name against loaded snapshots")
     screen.add_argument("--name", required=True)
@@ -36,13 +39,33 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def _run_ingest(source: str, app_settings: Settings) -> int:
-    adapters = {
-        "synthetic": SyntheticFixtureAdapter(
+    raw_directory = app_settings.data_directory / "raw"
+    adapter: SourceAdapter
+    manifest_source_id: str | None
+    if source == "synthetic":
+        adapter = SyntheticFixtureAdapter(
             app_settings.data_directory / SYNTHETIC_FIXTURE_RELATIVE_PATH
-        ),
-    }
-    snapshot = adapters[source].fetch()
+        )
+        manifest_source_id = None
+    elif source == "ofac":
+        adapter = ofac.OfacAdapter(raw_directory)
+        manifest_source_id = ofac.SOURCE_ID
+    else:
+        adapter = un.UnConsolidatedAdapter(raw_directory)
+        manifest_source_id = un.SOURCE_ID
+    snapshot = adapter.fetch()
     path = save_snapshot(snapshot, app_settings.snapshot_directory)
+    if manifest_source_id is not None:
+        mark_source_active(
+            app_settings.data_directory / "source-manifest.json",
+            manifest_source_id,
+            authoritative_url=snapshot.source_url,
+            format_name="xml",
+            terms_note=snapshot.terms_note,
+            retrieved_at=snapshot.retrieved_at,
+            sha256=snapshot.sha256,
+            record_count=len(snapshot.records),
+        )
     print(f"snapshot_id={snapshot.snapshot_id}")
     print(f"record_count={len(snapshot.records)}")
     print(f"sha256={snapshot.sha256}")
