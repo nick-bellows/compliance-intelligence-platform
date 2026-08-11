@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import StrEnum
 
 
@@ -37,6 +38,14 @@ class ScreeningHit:
     score: float
     risk_tier: RiskTier
     reasons: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class ScreeningRun:
+    run_id: str
+    created_at: datetime
+    dataset_snapshot_ids: tuple[str, ...]
+    input_count: int
 
 
 @dataclass(frozen=True, slots=True)

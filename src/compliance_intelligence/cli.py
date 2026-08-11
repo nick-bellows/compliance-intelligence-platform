@@ -1,19 +1,26 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import sys
+import uuid
+from datetime import UTC, datetime
 from pathlib import Path
 
 from compliance_intelligence import __version__
 from compliance_intelligence.config import Settings
-from compliance_intelligence.domain.models import ScreeningQuery
+from compliance_intelligence.domain.models import ScreeningQuery, ScreeningRun
 from compliance_intelligence.ingestion import ofac, un
 from compliance_intelligence.ingestion.base import SourceAdapter
 from compliance_intelligence.ingestion.manifest import mark_source_active
-from compliance_intelligence.ingestion.store import load_screening_dataset, save_snapshot
+from compliance_intelligence.ingestion.store import (
+    load_screening_dataset,
+    load_screening_snapshots,
+    save_snapshot,
+)
 from compliance_intelligence.ingestion.synthetic import SyntheticFixtureAdapter
 from compliance_intelligence.matching.engine import screen_records
-from compliance_intelligence.reporting.exports import write_hits_csv, write_json
+from compliance_intelligence.reporting.exports import write_hits_csv, write_json, write_run_tables
 
 SYNTHETIC_FIXTURE_RELATIVE_PATH = Path("samples/synthetic_sanctions_fixture.csv")
 
@@ -34,6 +41,12 @@ def _build_parser() -> argparse.ArgumentParser:
     screen.add_argument("--name", required=True)
     screen.add_argument("--country", action="append", default=[], dest="countries")
     screen.add_argument("--output-dir", type=Path, default=None)
+
+    batch = subparsers.add_parser(
+        "screen-batch", help="Screen a CSV of entities and export analyst tables"
+    )
+    batch.add_argument("--input", required=True, type=Path)
+    batch.add_argument("--output-dir", required=True, type=Path)
 
     return parser
 
@@ -113,6 +126,47 @@ def _run_screen(
     return 0
 
 
+def _run_screen_batch(input_path: Path, output_dir: Path, app_settings: Settings) -> int:
+    snapshots = load_screening_snapshots(
+        app_settings.snapshot_directory, app_settings.allow_synthetic_dataset
+    )
+    if not snapshots:
+        print(
+            "No verified sanctions dataset snapshot is loaded; screening is unavailable.",
+            file=sys.stderr,
+        )
+        return 1
+    records = [record for snapshot in snapshots for record in snapshot.records]
+    snapshot_ids = tuple(snapshot.snapshot_id for snapshot in snapshots)
+    thresholds = app_settings.matching_thresholds()
+
+    results = []
+    with input_path.open(encoding="utf-8", newline="") as handle:
+        for row in csv.DictReader(handle):
+            query = ScreeningQuery(
+                name=row["name"],
+                countries=(row["country"],) if row.get("country") else (),
+                external_id=row.get("external_id"),
+            )
+            results.append(screen_records(query, records, snapshot_ids, thresholds))
+
+    created_at = datetime.now(UTC)
+    run = ScreeningRun(
+        run_id=f"run-{created_at.strftime('%Y%m%dT%H%M%SZ')}-{uuid.uuid4().hex[:8]}",
+        created_at=created_at,
+        dataset_snapshot_ids=snapshot_ids,
+        input_count=len(results),
+    )
+    tables = write_run_tables(run, results, snapshots, output_dir)
+    flagged = sum(1 for result in results if result.review_required)
+    print(f"run_id={run.run_id}")
+    print(f"entities_screened={len(results)}")
+    print(f"entities_flagged={flagged}")
+    for name, path in tables.items():
+        print(f"table_{name}={path}")
+    return 0
+
+
 def main(argv: list[str] | None = None, app_settings: Settings | None = None) -> int:
     parser = _build_parser()
     args = parser.parse_args(argv)
@@ -124,5 +178,7 @@ def main(argv: list[str] | None = None, app_settings: Settings | None = None) ->
         return _run_ingest(args.source, configured)
     if args.command == "screen":
         return _run_screen(args.name, tuple(args.countries), args.output_dir, configured)
+    if args.command == "screen-batch":
+        return _run_screen_batch(args.input, args.output_dir, configured)
     parser.print_help()
     return 0

@@ -76,6 +76,16 @@ def load_snapshots(directory: Path) -> list[SourceSnapshot]:
     return snapshots
 
 
+def load_screening_snapshots(directory: Path, allow_synthetic: bool) -> list[SourceSnapshot]:
+    """Load snapshots eligible for screening, excluding synthetic ones unless allowed."""
+
+    return [
+        snapshot
+        for snapshot in load_snapshots(directory)
+        if allow_synthetic or not snapshot.snapshot_id.startswith(SYNTHETIC_SNAPSHOT_PREFIX)
+    ]
+
+
 def load_screening_dataset(
     directory: Path, allow_synthetic: bool
 ) -> tuple[list[SanctionsRecord], tuple[str, ...]]:
@@ -83,9 +93,7 @@ def load_screening_dataset(
 
     records: list[SanctionsRecord] = []
     snapshot_ids: list[str] = []
-    for snapshot in load_snapshots(directory):
-        if snapshot.snapshot_id.startswith(SYNTHETIC_SNAPSHOT_PREFIX) and not allow_synthetic:
-            continue
+    for snapshot in load_screening_snapshots(directory, allow_synthetic):
         records.extend(snapshot.records)
         snapshot_ids.append(snapshot.snapshot_id)
     return records, tuple(snapshot_ids)

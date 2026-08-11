@@ -65,3 +65,30 @@ def test_screen_excludes_synthetic_snapshots_by_default(
         )
         == 1
     )
+
+
+def test_screen_batch_writes_run_tables(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+) -> None:
+    settings = _settings(tmp_path)
+    assert main(["ingest", "--source", "synthetic"], settings) == 0
+    capsys.readouterr()
+
+    output_dir = tmp_path / "run"
+    input_csv = REPO_DATA_DIRECTORY / "samples" / "synthetic_entities.csv"
+    assert (
+        main(
+            ["screen-batch", "--input", str(input_csv), "--output-dir", str(output_dir)],
+            settings,
+        )
+        == 0
+    )
+    output = capsys.readouterr().out
+    assert "entities_screened=3" in output
+    for table in (
+        "screening_runs.csv",
+        "screening_entities.csv",
+        "screening_hits.csv",
+        "source_snapshots.csv",
+    ):
+        assert (output_dir / table).exists()

@@ -80,11 +80,11 @@ The API port is bound to `127.0.0.1`. The container loads snapshots from the rea
 
 ### M1 — Screening MVP
 
-- [ ] Implement OFAC plus one secondary official-source adapter.
-- [ ] Capture source URL, retrieval time, terms/license note, and SHA-256.
-- [ ] Normalize names, aliases, identifiers, countries, and programs.
-- [ ] Evaluate thresholds on a labeled name-pair set.
-- [ ] Expose `/v1/screen` and generate CSV/JSON review output.
+- [x] Implement OFAC plus one secondary official-source adapter (OFAC SDN + UN Consolidated List).
+- [x] Capture source URL, retrieval time, terms/license note, and SHA-256.
+- [x] Normalize names, aliases, identifiers, countries, and programs.
+- [x] Evaluate thresholds on a labeled name-pair set — see [eval/results/matching_report.md](eval/results/matching_report.md).
+- [x] Expose `/v1/screen` and generate CSV/JSON review output (`screen`, `screen-batch`).
 
 ### M2 — NLP and retrieval
 
