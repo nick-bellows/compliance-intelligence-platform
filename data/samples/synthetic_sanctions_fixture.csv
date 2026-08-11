@@ -1,0 +1,4 @@
+source,source_record_id,primary_name,aliases,programs,countries,synthetic
+SYNTHETIC_LIST,FAKE-001,Acme Galactic Holdings,Galactic Acme Holding,SAMPLE_PROGRAM,US,true
+SYNTHETIC_LIST,FAKE-002,Contoso Maritime Group,Contoso Marine,SAMPLE_PROGRAM,GB,true
+

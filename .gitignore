@@ -1,0 +1,28 @@
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+*.pyc
+*.log
+.env
+dist/
+build/
+htmlcov/
+.coverage
+
+# Third-party datasets are retrieved from their authoritative sources.
+data/raw/**
+data/interim/**
+data/processed/**
+!data/raw/README.md
+!data/interim/README.md
+!data/processed/README.md
+
+# Generated diligence outputs can contain sensitive review material.
+output/**
+!output/README.md
+
+# Power BI binaries are added only after privacy review.
+powerbi/*.pbix
+

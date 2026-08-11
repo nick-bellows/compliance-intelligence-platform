@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "source_id": "ofac_primary",
+      "display_name": "OFAC official sanctions data",
+      "status": "planned",
+      "authoritative_url": "INPUT_REQUIRED_AFTER_LIVE_VERIFICATION",
+      "format": "INPUT_REQUIRED",
+      "terms_note": "INPUT_REQUIRED",
+      "retrieved_at_utc": null,
+      "sha256": null,
+      "record_count": null
+    },
+    {
+      "source_id": "secondary_official",
+      "display_name": "Second official sanctions source",
+      "status": "planned",
+      "authoritative_url": "INPUT_REQUIRED_AFTER_SELECTION",
+      "format": "INPUT_REQUIRED",
+      "terms_note": "INPUT_REQUIRED",
+      "retrieved_at_utc": null,
+      "sha256": null,
+      "record_count": null
+    }
+  ]
+}
+

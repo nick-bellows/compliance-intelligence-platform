@@ -1,0 +1,21 @@
+services:
+  api:
+    build: .
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      DATA_DIRECTORY: /app/data
+      OUTPUT_DIRECTORY: /app/output
+      MINIMUM_MATCH_SCORE: ${MINIMUM_MATCH_SCORE:-75.0}
+      STRONG_MATCH_SCORE: ${STRONG_MATCH_SCORE:-90.0}
+      EXACT_MATCH_SCORE: ${EXACT_MATCH_SCORE:-99.5}
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./data:/app/data:ro
+      - ./output:/app/output
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true

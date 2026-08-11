@@ -1,0 +1,5 @@
+external_id,name,country,synthetic
+SYN-001,Acme Galactic Components,US,true
+SYN-002,Northwind Research Cooperative,CA,true
+SYN-003,Contoso Maritime Logistics,GB,true
+
