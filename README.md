@@ -1,5 +1,7 @@
 # Compliance Intelligence Platform
 
+[![quality](https://github.com/nick-bellows/compliance-intelligence-platform/actions/workflows/quality.yml/badge.svg)](https://github.com/nick-bellows/compliance-intelligence-platform/actions/workflows/quality.yml)
+
 An auditable portfolio system for public sanctions screening and information extraction over legal/government text. It combines entity normalization, explainable fuzzy matching, structured extraction, retrieval, API interoperability, evaluation, and analyst-ready exports.
 
 > Status: scaffolded. The included names and records are fictional. No real screening result or evaluation metric is claimed.
@@ -64,7 +66,7 @@ uvicorn compliance_intelligence.api.main:app --reload
 
 The health endpoint is available immediately. The screening endpoint returns `503` until a verified dataset snapshot is loaded; this prevents an empty dataset from producing false “clear” results. Snapshots are loaded at startup from `SNAPSHOT_DIRECTORY` (default `data/processed/snapshots`); snapshots produced from the synthetic fixture are excluded unless `ALLOW_SYNTHETIC_DATASET=true`, keeping demonstration data isolated from real screening.
 
-The GitHub Actions workflow in `.github/workflows/quality.yml` activates when this repository is pushed to GitHub; until then `scripts/run_checks.ps1` runs the identical checks locally.
+The GitHub Actions workflow in `.github/workflows/quality.yml` runs lint, strict type checks, tests with a coverage gate, manifest validation, and the container build on every push; `scripts/run_checks.ps1` runs the identical checks locally.
 
 For the containerized API:
 
