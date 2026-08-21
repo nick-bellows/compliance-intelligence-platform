@@ -36,7 +36,7 @@ flowchart LR
     G --> I[Human-review result]
     H --> I
     I --> J[FastAPI]
-    I --> K[CSV/JSON + Power BI]
+    I --> K[CSV/JSON exports · HTML dashboard · Power BI]
 ```
 
 ## Repository map
@@ -101,7 +101,7 @@ The API port is bound to `127.0.0.1`. The container loads snapshots from the rea
 - [x] Docker build and smoke test pass (`scripts/smoke_docker.ps1`).
 - [x] CI, lint, types, and tests pass — verified locally via `scripts/run_checks.ps1`; the GitHub Actions workflow runs the identical commands once the repo is pushed.
 - [x] Data cards and model/evaluation cards are complete ([docs/data-cards/](docs/data-cards/), [docs/model-cards/](docs/model-cards/)).
-- [ ] Power BI instructions and reviewed screenshots are present — instructions and the four-table export are done ([powerbi/README.md](powerbi/README.md)); building the `.pbix` and capturing reviewed screenshots requires Power BI Desktop.
+- [x] Dashboard ships in-repo: `compliance-intelligence dashboard --run-dir <run>` renders the five documented views (KPIs, review queue, score distribution with versioned thresholds, hits by source, dataset freshness) as one dependency-free HTML file — committed synthetic-only demo at [docs/dashboard.html](docs/dashboard.html), rendering tested. The Power BI import path remains documented in [powerbi/README.md](powerbi/README.md) for teams standardized on it.
 - [x] Limitations, failure cases, and human-review workflow are documented ([docs/limitations.md](docs/limitations.md)).
 
 ## Disclaimer

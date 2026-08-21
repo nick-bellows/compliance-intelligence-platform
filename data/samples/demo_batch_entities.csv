@@ -1,0 +1,13 @@
+external_id,name,country,synthetic
+SYN-101,Acme Galactic Holdings,US,true
+SYN-102,Acme Galactic Holding,US,true
+SYN-103,Galactic Acme Holdings,US,true
+SYN-104,Acme Galactik Holding Co,US,true
+SYN-105,Contoso Maritime Group,GB,true
+SYN-106,Contoso Maritime Grp,GB,true
+SYN-107,Contoso Marine Services,GB,true
+SYN-108,Northwind Research Cooperative,CA,true
+SYN-111,Acme Galactic Holdings Intl,US,true
+SYN-112,Acme Galactic Hldgs,US,true
+SYN-109,Fabrikam Field Logistics,DE,true
+SYN-110,Wingtip Toys Distribution,US,true

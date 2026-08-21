@@ -63,6 +63,12 @@ def _build_parser() -> argparse.ArgumentParser:
     extract = subparsers.add_parser("extract", help="Extract entities from a text file")
     extract.add_argument("--file", required=True, type=Path)
 
+    dashboard = subparsers.add_parser(
+        "dashboard", help="Render a self-contained HTML dashboard from a run directory"
+    )
+    dashboard.add_argument("--run-dir", required=True, type=Path)
+    dashboard.add_argument("--output", type=Path, default=None)
+
     return parser
 
 
@@ -277,5 +283,12 @@ def main(argv: list[str] | None = None, app_settings: Settings | None = None) ->
         return _run_search(args.query, args.mode, args.limit, configured)
     if args.command == "extract":
         return _run_extract(args.file, configured)
+    if args.command == "dashboard":
+        from compliance_intelligence.reporting.dashboard import write_dashboard
+
+        output = args.output if args.output is not None else args.run_dir / "dashboard.html"
+        path = write_dashboard(args.run_dir, output, configured.matching_thresholds())
+        print(f"dashboard={path}")
+        return 0
     parser.print_help()
     return 0

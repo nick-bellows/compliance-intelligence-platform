@@ -1,5 +1,10 @@
 # Power BI dashboard
 
+> An in-repo HTML dashboard covering the same five views ships with the CLI
+> (`compliance-intelligence dashboard --run-dir <run>`; committed demo at
+> `docs/dashboard.html`). This document remains the import guide for teams
+> standardized on Power BI — both consume the identical reviewed run tables.
+
 Power BI consumes reviewed aggregate CSV exports; it does not query raw source
 files. Generate a run directory first:
 

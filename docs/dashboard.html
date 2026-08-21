@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Screening dashboard — run-20260821T172609Z-3489c0ed</title>
+<style>
+:root {
+  color-scheme: light;
+  --surface: #fcfcfb; --page: #f9f9f7;
+  --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --baseline: #c3c2b7; --border: rgba(11,11,11,0.10);
+  --series: #2a78d6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface: #1a1a19; --page: #0d0d0d;
+    --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --baseline: #383835; --border: rgba(255,255,255,0.10);
+    --series: #3987e5;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface: #1a1a19; --page: #0d0d0d;
+  --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --baseline: #383835; --border: rgba(255,255,255,0.10);
+  --series: #3987e5;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 1080px; margin: 0 auto; padding: 24px 20px 48px; }
+h1 { font-size: 20px; margin: 0 0 2px; }
+h2 { font-size: 15px; margin: 28px 0 10px; }
+.sub { color: var(--ink-2); font-size: 12.5px; }
+.mono { font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
+.banner { margin: 14px 0 0; padding: 8px 12px; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--surface); color: var(--ink-2); font-size: 12.5px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px; margin-top: 18px; }
+.tile { background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 14px; }
+.tile-value { font-size: 26px; font-weight: 600; }
+.tile-label { color: var(--ink-2); font-size: 12px; }
+figure { margin: 0; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px; overflow-x: auto; }
+figcaption { color: var(--muted); font-size: 12px; margin-top: 6px; }
+svg { display: block; width: 100%; height: auto; }
+.series { fill: var(--series); }
+.grid { stroke: var(--grid); stroke-width: 1; }
+.baseline { stroke: var(--baseline); stroke-width: 1; }
+.threshold { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+.tick, .label, .value { font: 11px system-ui, sans-serif; fill: var(--muted);
+  font-variant-numeric: tabular-nums; }
+.label, .value { fill: var(--ink-2); }
+table { border-collapse: collapse; width: 100%; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+  font-size: 13px; }
+th, td { text-align: left; padding: 7px 10px; border-top: 1px solid var(--grid); }
+thead th { border-top: 0; color: var(--ink-2); font-weight: 600; font-size: 12px; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  margin-right: 6px; vertical-align: baseline; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 10px; }
+.card { background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 14px; }
+.card-title { font-weight: 600; }
+.card-row { color: var(--ink-2); font-size: 12.5px; margin-top: 2px; }
+.card-note { color: var(--muted); font-size: 11.5px; margin-top: 6px; }
+.empty { color: var(--ink-2); background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+details { margin-top: 8px; color: var(--ink-2); }
+footer { margin-top: 30px; color: var(--muted); font-size: 12px; }
+#tip { position: fixed; display: none; pointer-events: none; z-index: 10;
+  background: var(--ink); color: var(--page); padding: 4px 8px; border-radius: 6px;
+  font-size: 12px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Sanctions-screening dashboard</h1>
+  <div class="sub mono">run-20260821T172609Z-3489c0ed · created 2026-08-21T17:26:09Z</div>
+  <div class="banner">All entities in this dashboard are <strong>synthetic</strong>.
+  Generated from the reviewed run tables only — never from raw source files.</div>
+
+  <div class="tiles"><div class="tile"><div class="tile-value">12</div><div class="tile-label">entities screened</div></div><div class="tile"><div class="tile-value">7</div><div class="tile-label">flagged for review</div></div><div class="tile"><div class="tile-value">58%</div><div class="tile-label">flag rate</div></div><div class="tile"><div class="tile-value">7</div><div class="tile-label">hits</div></div><div class="tile"><div class="tile-value">4</div><div class="tile-label">exact-tier hits</div></div></div>
+
+  <h2>Match-score distribution</h2>
+  <figure><svg viewBox="0 0 640 220" role="img" aria-label="Match-score distribution"><line x1="36" y1="153.0" x2="628" y2="153.0" class="grid"/><text x="30" y="156.5" class="tick" text-anchor="end">1</text><line x1="36" y1="112.0" x2="628" y2="112.0" class="grid"/><text x="30" y="115.5" class="tick" text-anchor="end">2</text><line x1="36" y1="71.0" x2="628" y2="71.0" class="grid"/><text x="30" y="74.5" class="tick" text-anchor="end">3</text><line x1="36" y1="30.0" x2="628" y2="30.0" class="grid"/><text x="30" y="33.5" class="tick" text-anchor="end">4</text><path d="M194.9,194.0 L194.9,157.0 Q194.9,153.0 198.9,153.0 L228.3,153.0 Q232.3,153.0 232.3,157.0 L232.3,194.0 Z" class="series" data-tip="89–90: 1 hit"><title>89–90: 1 hit</title></path><path d="M313.3,194.0 L313.3,157.0 Q313.3,153.0 317.3,153.0 L346.7,153.0 Q350.7,153.0 350.7,157.0 L350.7,194.0 Z" class="series" data-tip="92–93: 1 hit"><title>92–93: 1 hit</title></path><path d="M431.7,194.0 L431.7,157.0 Q431.7,153.0 435.7,153.0 L465.1,153.0 Q469.1,153.0 469.1,157.0 L469.1,194.0 Z" class="series" data-tip="95–96: 1 hit"><title>95–96: 1 hit</title></path><path d="M589.5,194.0 L589.5,34.0 Q589.5,30.0 593.5,30.0 L623.0,30.0 Q627.0,30.0 627.0,34.0 L627.0,194.0 Z" class="series" data-tip="99–100: 4 hits"><title>99–100: 4 hits</title></path><line x1="193.9" y1="26" x2="193.9" y2="194" class="threshold"/><text x="193.9" y="20" class="tick" text-anchor="middle">weak ≥ 89</text><line x1="430.7" y1="26" x2="430.7" y2="194" class="threshold"/><text x="430.7" y="20" class="tick" text-anchor="middle">strong ≥ 95</text><line x1="608.3" y1="26" x2="608.3" y2="194" class="threshold"/><text x="608.3" y="20" class="tick" text-anchor="middle">exact ≥ 99.5</text><line x1="36" y1="194" x2="628" y2="194" class="baseline"/><text x="36.0" y="212" class="tick" text-anchor="middle">85</text><text x="233.3" y="212" class="tick" text-anchor="middle">90</text><text x="430.7" y="212" class="tick" text-anchor="middle">95</text><text x="628.0" y="212" class="tick" text-anchor="middle">100</text></svg><figcaption>Match-score distribution with the versioned review thresholds (evaluated-2026.08-v2).</figcaption></figure><details><summary>Score distribution as a table</summary><table><thead><tr><th>Score bin</th><th>Hits</th></tr></thead><tbody><tr><td>89–90</td><td>1</td></tr><tr><td>92–93</td><td>1</td></tr><tr><td>95–96</td><td>1</td></tr><tr><td>99–100</td><td>4</td></tr></tbody></table></details>
+
+  <h2>Hits by source</h2>
+  <figure><svg viewBox="0 0 640 36" role="img" aria-label="Hits by source"><text x="162" y="21.0" class="label" text-anchor="end">SYNTHETIC_LIST</text><path d="M170.0,4.0 L580.0,4.0 Q584.0,4.0 584.0,8.0 L584.0,26.0 Q584.0,30.0 580.0,30.0 L170.0,30.0 Z" class="series" data-tip="SYNTHETIC_LIST: 7 hits"><title>SYNTHETIC_LIST: 7 hits</title></path><text x="592.0" y="21.0" class="value">7</text></svg><figcaption>Hits by source list.</figcaption></figure>
+
+  <h2>Review queue</h2>
+  <table><thead><tr><th>Query</th><th>Matched name</th><th class="num">Score</th><th>Tier</th><th>Source</th><th>Record</th><th>Reasons</th></tr></thead><tbody><tr><td>Acme Galactic Holdings</td><td>Acme Galactic Holdings</td><td class="num">100.0</td><td><span class="dot" style="background:#d03b3b"></span>exact</td><td>SYNTHETIC_LIST</td><td class="mono">FAKE-001</td><td>normalized_sequence_similarity, country_overlap</td></tr><tr><td>Acme Galactic Holding</td><td>Galactic Acme Holding</td><td class="num">100.0</td><td><span class="dot" style="background:#d03b3b"></span>exact</td><td>SYNTHETIC_LIST</td><td class="mono">FAKE-001</td><td>normalized_sequence_similarity, token_order_normalized, country_overlap</td></tr><tr><td>Galactic Acme Holdings</td><td>Acme Galactic Holdings</td><td class="num">100.0</td><td><span class="dot" style="background:#d03b3b"></span>exact</td><td>SYNTHETIC_LIST</td><td class="mono">FAKE-001</td><td>normalized_sequence_similarity, token_order_normalized, country_overlap</td></tr><tr><td>Contoso Maritime Group</td><td>Contoso Maritime Group</td><td class="num">100.0</td><td><span class="dot" style="background:#d03b3b"></span>exact</td><td>SYNTHETIC_LIST</td><td class="mono">FAKE-002</td><td>normalized_sequence_similarity, country_overlap</td></tr><tr><td>Contoso Maritime Grp</td><td>Contoso Maritime Group</td><td class="num">95.2</td><td><span class="dot" style="background:#ec835a"></span>strong_fuzzy</td><td>SYNTHETIC_LIST</td><td class="mono">FAKE-002</td><td>normalized_sequence_similarity, country_overlap</td></tr><tr><td>Acme Galactic Hldgs</td><td>Acme Galactic Holdings</td><td class="num">92.7</td><td><span class="dot" style="background:#fab219"></span>weak_fuzzy</td><td>SYNTHETIC_LIST</td><td class="mono">FAKE-001</td><td>normalized_sequence_similarity, country_overlap</td></tr><tr><td>Acme Galactic Holdings Intl</td><td>Acme Galactic Holdings</td><td class="num">89.8</td><td><span class="dot" style="background:#fab219"></span>weak_fuzzy</td><td>SYNTHETIC_LIST</td><td class="mono">FAKE-001</td><td>normalized_sequence_similarity, country_overlap</td></tr></tbody></table>
+
+  <h2>Dataset freshness</h2>
+  <div class="cards"><div class="card"><div class="card-title">SYNTHETIC_LIST</div><div class="card-row">retrieved <strong>2026-08-21T17:24:48Z</strong></div><div class="card-row">2 records · sha256 <span class="mono">4a9ccd33f11a…</span></div><div class="card-row mono">synthetic-fixture-4a9ccd33f11a</div><div class="card-note" title="Synthetic demonstration data; not authoritative.">Synthetic demonstration data; not authoritative.</div></div></div>
+
+  <footer>
+    scorer rapidfuzz-ratio-tokensort-v2 · thresholds evaluated-2026.08-v2
+    (weak ≥ 89, strong ≥ 95,
+    exact ≥ 99.5) · snapshots synthetic-fixture-4a9ccd33f11a
+    · dashboard generated 2026-08-21 17:26 UTC
+  </footer>
+</main>
+<div id="tip"></div>
+<script>
+(function () {
+  var tip = document.getElementById("tip");
+  document.querySelectorAll("[data-tip]").forEach(function (el) {
+    el.addEventListener("mousemove", function (ev) {
+      tip.textContent = el.getAttribute("data-tip");
+      tip.style.display = "block";
+      tip.style.left = (ev.clientX + 12) + "px";
+      tip.style.top = (ev.clientY - 28) + "px";
+    });
+    el.addEventListener("mouseleave", function () { tip.style.display = "none"; });
+  });
+})();
+</script>
+</body>
+</html>
