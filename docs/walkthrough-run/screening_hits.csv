@@ -1,0 +1,8 @@
+run_id,external_id,query_name,source,source_record_id,matched_name,score,risk_tier,reasons
+run-20260821T172609Z-3489c0ed,SYN-101,Acme Galactic Holdings,SYNTHETIC_LIST,FAKE-001,Acme Galactic Holdings,100.0,exact,normalized_sequence_similarity|country_overlap
+run-20260821T172609Z-3489c0ed,SYN-102,Acme Galactic Holding,SYNTHETIC_LIST,FAKE-001,Galactic Acme Holding,100.0,exact,normalized_sequence_similarity|token_order_normalized|country_overlap
+run-20260821T172609Z-3489c0ed,SYN-103,Galactic Acme Holdings,SYNTHETIC_LIST,FAKE-001,Acme Galactic Holdings,100.0,exact,normalized_sequence_similarity|token_order_normalized|country_overlap
+run-20260821T172609Z-3489c0ed,SYN-105,Contoso Maritime Group,SYNTHETIC_LIST,FAKE-002,Contoso Maritime Group,100.0,exact,normalized_sequence_similarity|country_overlap
+run-20260821T172609Z-3489c0ed,SYN-106,Contoso Maritime Grp,SYNTHETIC_LIST,FAKE-002,Contoso Maritime Group,95.24,strong_fuzzy,normalized_sequence_similarity|country_overlap
+run-20260821T172609Z-3489c0ed,SYN-111,Acme Galactic Holdings Intl,SYNTHETIC_LIST,FAKE-001,Acme Galactic Holdings,89.8,weak_fuzzy,normalized_sequence_similarity|country_overlap
+run-20260821T172609Z-3489c0ed,SYN-112,Acme Galactic Hldgs,SYNTHETIC_LIST,FAKE-001,Acme Galactic Holdings,92.68,weak_fuzzy,normalized_sequence_similarity|country_overlap

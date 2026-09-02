@@ -6,6 +6,12 @@ An auditable portfolio system for public sanctions screening and information ext
 
 > **Status: implemented reference system, validated with committed synthetic fixtures and public-source adapters.** The included names and example records are fictional. Reported evaluation results apply only to the versioned labeled sets in this repository; they are not real screening determinations.
 
+**[Open the three-minute synthetic analyst walkthrough](docs/index.html)** to follow a clear result, an explainable review candidate, and the API's fail-closed behavior. The static artifact is generated from committed reviewed run tables; it does not expose a public screening endpoint.
+
+## Technology demonstrated
+
+Python 3.12, FastAPI, Pydantic, RapidFuzz, spaCy, BM25, sentence-transformers, pytest, mypy, Ruff, Docker, GitHub Actions, versioned CSV/JSON analyst exports, and dependency-free HTML/SVG reporting.
+
 ## Intended users
 
 - A diligence analyst screening a customer, partner, or supplier
@@ -101,7 +107,7 @@ The API port is bound to `127.0.0.1`. The container loads snapshots from the rea
 - [x] Docker build and smoke test pass (`scripts/smoke_docker.ps1`).
 - [x] CI, lint, types, and tests pass — verified locally via `scripts/run_checks.ps1`; the GitHub Actions workflow runs the identical commands once the repo is pushed.
 - [x] Data cards and model/evaluation cards are complete ([docs/data-cards/](docs/data-cards/), [docs/model-cards/](docs/model-cards/)).
-- [x] Dashboard ships in-repo: `compliance-intelligence dashboard --run-dir <run>` renders the five documented views (KPIs, review queue, score distribution with versioned thresholds, hits by source, dataset freshness) as one dependency-free HTML file — committed synthetic-only demo at [docs/dashboard.html](docs/dashboard.html), rendering tested. The Power BI import path remains documented in [powerbi/README.md](powerbi/README.md) for teams standardized on it.
+- [x] Dashboard ships in-repo: `compliance-intelligence dashboard --run-dir <run>` renders the five documented views (KPIs, review queue, score distribution with versioned thresholds, hits by source, dataset freshness) as one dependency-free HTML file — committed synthetic-only walkthrough at [docs/index.html](docs/index.html), rendering and artifact drift tested. The Power BI import path remains documented in [powerbi/README.md](powerbi/README.md) for teams standardized on it.
 - [x] Limitations, failure cases, and human-review workflow are documented ([docs/limitations.md](docs/limitations.md)).
 
 ## Disclaimer

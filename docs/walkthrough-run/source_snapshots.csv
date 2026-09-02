@@ -1,0 +1,2 @@
+snapshot_id,source_name,source_url,retrieved_at_utc,sha256,record_count,terms_note
+synthetic-fixture-4a9ccd33f11a,SYNTHETIC_LIST,data/samples/synthetic_sanctions_fixture.csv,2026-08-21T17:24:48.797890+00:00,4a9ccd33f11a5e9a5d82e6e352ac03cc7f75ac3f59a8408b68d158ccaaa4b8ab,2,Synthetic demonstration data; not authoritative.

@@ -202,6 +202,36 @@ def render_dashboard(tables: RunTables, thresholds: MatchingThresholds) -> str:
     flag_rate = f"{flagged / screened:.0%}" if screened else "—"
     exact_hits = sum(1 for h in hits if h["risk_tier"] == "exact")
 
+    clear_entity = next(
+        (entity for entity in entities if entity["review_required"].lower() == "false"),
+        None,
+    )
+    review_hit = next(
+        (hit for hit in hits if hit["risk_tier"] in {"strong_fuzzy", "weak_fuzzy"}),
+        hits[0] if hits else None,
+    )
+    clear_case = (
+        "<p>No clear-case row is present in this run.</p>"
+        if clear_entity is None
+        else (
+            f'<p><strong>{_esc(clear_entity["query_name"])}</strong></p>'
+            f'<p class="case-detail">normalized to '
+            f'<span class="mono">{_esc(clear_entity["normalized_name"])}</span>; '
+            "no candidate met the versioned review threshold.</p>"
+        )
+    )
+    review_case = (
+        "<p>No review-candidate row is present in this run.</p>"
+        if review_hit is None
+        else (
+            f'<p><strong>{_esc(review_hit["query_name"])}</strong> &rarr; '
+            f'{_esc(review_hit["matched_name"])}</p>'
+            f'<p class="case-detail">score {float(review_hit["score"]):.1f}; '
+            f'tier {_esc(review_hit["risk_tier"])}; reasons '
+            f'{_esc(review_hit["reasons"].replace("|", ", "))}. Human review is still required.</p>'
+        )
+    )
+
     tiles = "".join(
         f'<div class="tile"><div class="tile-value">{value}</div>'
         f'<div class="tile-label">{label}</div></div>'
@@ -263,7 +293,9 @@ def render_dashboard(tables: RunTables, thresholds: MatchingThresholds) -> str:
     )
 
     run = tables.run
-    generated = datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC")
+    generated = datetime.fromisoformat(run["created_at_utc"]).astimezone(UTC).strftime(
+        "%Y-%m-%d %H:%M UTC"
+    )
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -274,32 +306,45 @@ def render_dashboard(tables: RunTables, thresholds: MatchingThresholds) -> str:
 :root {{
   color-scheme: light;
   --surface: #fcfcfb; --page: #f9f9f7;
-  --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+  --ink: #0b0b0b; --ink-2: #52514e; --muted: #62605c;
   --grid: #e1e0d9; --baseline: #c3c2b7; --border: rgba(11,11,11,0.10);
-  --series: #2a78d6;
+  --series: #0b5cad;
 }}
 @media (prefers-color-scheme: dark) {{
   :root:not([data-theme="light"]) {{
     color-scheme: dark;
     --surface: #1a1a19; --page: #0d0d0d;
-    --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+    --ink: #ffffff; --ink-2: #c3c2b7; --muted: #aaa79f;
     --grid: #2c2c2a; --baseline: #383835; --border: rgba(255,255,255,0.10);
-    --series: #3987e5;
+    --series: #6db6ff;
   }}
 }}
 :root[data-theme="dark"] {{
   color-scheme: dark;
   --surface: #1a1a19; --page: #0d0d0d;
-  --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+  --ink: #ffffff; --ink-2: #c3c2b7; --muted: #aaa79f;
   --grid: #2c2c2a; --baseline: #383835; --border: rgba(255,255,255,0.10);
-  --series: #3987e5;
+  --series: #6db6ff;
 }}
 * {{ box-sizing: border-box; }}
 body {{ margin: 0; background: var(--page); color: var(--ink);
   font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }}
+a {{ color: var(--series); }}
+:focus-visible {{ outline: 3px solid var(--series); outline-offset: 3px; }}
 main {{ max-width: 1080px; margin: 0 auto; padding: 24px 20px 48px; }}
 h1 {{ font-size: 20px; margin: 0 0 2px; }}
 h2 {{ font-size: 15px; margin: 28px 0 10px; }}
+.skip {{ position: absolute; left: -9999px; top: 8px; background: var(--surface);
+  padding: 8px 12px; z-index: 20; }}
+.skip:focus {{ left: 8px; }}
+.tour {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px; margin-top: 12px; }}
+.case {{ background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px; }}
+.case h3 {{ font-size: 14px; margin: 0 0 8px; }}
+.case p {{ margin: 5px 0; }}
+.case-detail {{ color: var(--ink-2); font-size: 12.5px; }}
+.case-link {{ display: inline-block; margin-top: 8px; font-size: 12px; }}
 .sub {{ color: var(--ink-2); font-size: 12.5px; }}
 .mono {{ font-family: ui-monospace, Consolas, monospace; font-size: 12px; }}
 .banner {{ margin: 14px 0 0; padding: 8px 12px; border: 1px solid var(--border);
@@ -346,11 +391,36 @@ footer {{ margin-top: 30px; color: var(--muted); font-size: 12px; }}
 </style>
 </head>
 <body>
-<main>
-  <h1>Sanctions-screening dashboard</h1>
+<a class="skip" href="#reviewer-tour">Skip to reviewer tour</a>
+<main id="main">
+  <h1>Compliance Intelligence Platform</h1>
   <div class="sub mono">{_esc(run["run_id"])} · created {_esc(run["created_at_utc"][:19])}Z</div>
   <div class="banner">All entities in this dashboard are <strong>synthetic</strong>.
-  Generated from the reviewed run tables only — never from raw source files.</div>
+  Generated from the reviewed run tables only — never from raw source files.
+  A possible match is a review lead, not a sanctions or compliance determination.</div>
+
+  <section id="reviewer-tour" aria-labelledby="tour-heading">
+    <h2 id="tour-heading">Three-minute analyst walkthrough</h2>
+    <div class="tour">
+      <article class="case">
+        <h3>1. Clear result</h3>
+        {clear_case}
+        <a class="case-link" href="https://github.com/nick-bellows/compliance-intelligence-platform/blob/master/src/compliance_intelligence/matching/engine.py">Inspect matching logic</a>
+      </article>
+      <article class="case">
+        <h3>2. Explainable review candidate</h3>
+        {review_case}
+        <a class="case-link" href="#review-queue">Inspect source, score, and reason fields</a>
+      </article>
+      <article class="case">
+        <h3>3. Source unavailable</h3>
+        <p><strong>No verified snapshot &rarr; HTTP 503</strong></p>
+        <p class="case-detail">The API refuses to turn missing data into a false clear result. This static page does not expose a public screening endpoint.</p>
+        <a class="case-link" href="https://github.com/nick-bellows/compliance-intelligence-platform/blob/master/tests/test_api.py">Inspect fail-closed contract tests</a>
+      </article>
+    </div>
+    <p class="case-detail">Follow the evidence into the <a href="https://github.com/nick-bellows/compliance-intelligence-platform/blob/master/src/compliance_intelligence/api/schemas.py">FastAPI schemas</a>, <a href="https://github.com/nick-bellows/compliance-intelligence-platform/blob/master/docs/threat-model.md">threat model</a>, <a href="https://github.com/nick-bellows/compliance-intelligence-platform/blob/master/eval/results/matching_report.md">matching evaluation</a>, and <a href="https://github.com/nick-bellows/compliance-intelligence-platform/blob/master/docs/limitations.md">limitations</a>.</p>
+  </section>
 
   <div class="tiles">{tiles}</div>
 
@@ -360,7 +430,7 @@ footer {{ margin-top: 30px; color: var(--muted); font-size: 12px; }}
   <h2>Hits by source</h2>
   {sources if sources else '<p class="empty">No hits in this run.</p>'}
 
-  <h2>Review queue</h2>
+  <h2 id="review-queue">Review queue</h2>
   {queue}
 
   <h2>Dataset freshness</h2>

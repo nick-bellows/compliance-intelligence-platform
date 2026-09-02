@@ -127,6 +127,19 @@ def test_renders_all_documented_views(tmp_path: Path) -> None:
     assert "Score distribution as a table" in html
 
 
+def test_reviewer_tour_uses_rows_from_the_reviewed_run(tmp_path: Path) -> None:
+    html = render_dashboard(load_run_tables(_fixture_run(tmp_path)), THRESHOLDS)
+
+    assert 'id="reviewer-tour"' in html
+    assert "Beta Example Ltd" in html
+    assert "beta example ltd" in html
+    assert "Alpha Example Corp" in html
+    assert "score 92.5" in html
+    assert "No verified snapshot &rarr; HTTP 503" in html
+    assert "not a sanctions or compliance determination" in html
+    assert "tests/test_api.py" in html
+
+
 def test_review_queue_sorted_by_tier_then_score(tmp_path: Path) -> None:
     html = render_dashboard(load_run_tables(_fixture_run(tmp_path)), THRESHOLDS)
     assert html.index(">exact<") < html.index(">weak_fuzzy<")

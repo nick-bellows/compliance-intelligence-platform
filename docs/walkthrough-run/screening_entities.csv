@@ -1,0 +1,13 @@
+run_id,external_id,query_name,normalized_name,best_risk_tier,review_required,hit_count
+run-20260821T172609Z-3489c0ed,SYN-101,Acme Galactic Holdings,acme galactic holdings,exact,True,1
+run-20260821T172609Z-3489c0ed,SYN-102,Acme Galactic Holding,acme galactic holding,exact,True,1
+run-20260821T172609Z-3489c0ed,SYN-103,Galactic Acme Holdings,galactic acme holdings,exact,True,1
+run-20260821T172609Z-3489c0ed,SYN-104,Acme Galactik Holding Co,acme galactik holding co,clear,False,0
+run-20260821T172609Z-3489c0ed,SYN-105,Contoso Maritime Group,contoso maritime group,exact,True,1
+run-20260821T172609Z-3489c0ed,SYN-106,Contoso Maritime Grp,contoso maritime grp,strong_fuzzy,True,1
+run-20260821T172609Z-3489c0ed,SYN-107,Contoso Marine Services,contoso marine services,clear,False,0
+run-20260821T172609Z-3489c0ed,SYN-108,Northwind Research Cooperative,northwind research cooperative,clear,False,0
+run-20260821T172609Z-3489c0ed,SYN-111,Acme Galactic Holdings Intl,acme galactic holdings intl,weak_fuzzy,True,1
+run-20260821T172609Z-3489c0ed,SYN-112,Acme Galactic Hldgs,acme galactic hldgs,weak_fuzzy,True,1
+run-20260821T172609Z-3489c0ed,SYN-109,Fabrikam Field Logistics,fabrikam field logistics,clear,False,0
+run-20260821T172609Z-3489c0ed,SYN-110,Wingtip Toys Distribution,wingtip toys distribution,clear,False,0
