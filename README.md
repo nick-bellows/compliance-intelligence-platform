@@ -4,7 +4,7 @@
 
 An auditable portfolio system for public sanctions screening and information extraction over legal/government text. It combines entity normalization, explainable fuzzy matching, structured extraction, retrieval, API interoperability, evaluation, and analyst-ready exports.
 
-> Status: scaffolded. The included names and records are fictional. No real screening result or evaluation metric is claimed.
+> **Status: implemented reference system, validated with committed synthetic fixtures and public-source adapters.** The included names and example records are fictional. Reported evaluation results apply only to the versioned labeled sets in this repository; they are not real screening determinations.
 
 ## Intended users
 
