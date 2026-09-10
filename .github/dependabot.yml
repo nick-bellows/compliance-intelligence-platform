@@ -13,3 +13,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    ignore:
+      # The image tracks the interpreter series the project supports
+      # (requires-python >=3.12,<3.14); patch updates to the image still arrive.
+      - dependency-name: python
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]

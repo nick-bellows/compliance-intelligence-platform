@@ -234,6 +234,18 @@ def render_markdown(report: dict[str, object]) -> str:
     return "\n".join(lines)
 
 
+def cases_file_sha256() -> str:
+    """SHA-256 of the labeled set as committed.
+
+    `.gitattributes` stores CSV files with LF endings, but a Windows checkout can
+    carry CRLF in the working copy. Hashing the LF-normalized bytes yields the
+    committed content's hash on every platform, so the drift test compares like
+    with like.
+    """
+
+    return hashlib.sha256(CASES_PATH.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -255,8 +267,8 @@ def main() -> int:
         "generated_at_utc": datetime.now(UTC).isoformat(),
         "scorer_version": SCORER_VERSION,
         "thresholds_version": THRESHOLDS_VERSION,
-        "cases_file": str(CASES_PATH.relative_to(ROOT)),
-        "cases_file_sha256": hashlib.sha256(CASES_PATH.read_bytes()).hexdigest(),
+        "cases_file": CASES_PATH.relative_to(ROOT).as_posix(),
+        "cases_file_sha256": cases_file_sha256(),
         "scorers": {scorer: evaluate(scorer) for scorer in ("rapidfuzz", "difflib")},
     }
     output_dir.mkdir(parents=True, exist_ok=True)

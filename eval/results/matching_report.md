@@ -1,8 +1,8 @@
 # Matching evaluation report
 
-Generated: 2026-09-10T21:37:13.605636+00:00
+Generated: 2026-09-10T21:46:37.123142+00:00
 Scorer version: `rapidfuzz-ratio-tokensort-v3` · Thresholds version: `evaluated-2026.08-v2`
-Labeled set: `eval\data\matching_cases.csv` (sha256 `f28830e9973d…`), 163 cases (98 tune / 65 holdout).
+Labeled set: `eval/data/matching_cases.csv` (sha256 `9843690c6cf0…`), 163 cases (98 tune / 65 holdout).
 
 Labels encode desired screening behavior (flag-for-review), reviewed by a single
 annotator — a documented limitation. All names are fictional.

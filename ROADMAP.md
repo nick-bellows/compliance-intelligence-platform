@@ -44,8 +44,8 @@ Who: Claude Code, unattended. Changes no threshold or labeled set. The scorer ch
 | gitleaks v8.24.3 over the full history (14 commits) | no leaks found |
 | Logged-out fetch of the Pages URL | HTTP 200 for `/` and `/dashboard.html`, 2026-09-10 |
 | Evaluation regeneration | `python eval/run_matching_eval.py` reproduces the committed reports; only `generated_at_utc` differs |
-| Public CI on the finalization commit | PENDING_CI |
-| Cold clone from GitHub | PENDING_COLDCLONE |
+| Public CI | `a530056`: container smoke test, pip-audit, and gitleaks green; the drift test failed because the committed report hashed a CRLF working copy of the labeled set and recorded a Windows path (every score identical). The follow-up commit hashes LF-normalized bytes and records a POSIX path, making the report platform-independent; its own CI result is recorded below once observed |
+| Cold clone from GitHub | `a530056`: fresh Python 3.13 venv, ruff and mypy clean, 71 passed / 2 skipped (NLP and retrieval extras not installed) plus the same single drift failure; rerun recorded below after the fix |
 
 Local Python 3.13 results do not prove the Python 3.12 CI environment; the public workflow run does. Local tests do not prove that the OFAC or UN endpoints are available on a later date; the walkthrough shows the snapshot date and hash it actually uses.
 

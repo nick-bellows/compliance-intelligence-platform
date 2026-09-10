@@ -2,6 +2,7 @@ name: quality
 
 on:
   push:
+    branches: [master]
   pull_request:
 
 # Read-only token for every job: nothing here publishes, comments, or tags.
