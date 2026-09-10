@@ -27,7 +27,7 @@ nlp = [
   "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
 ]
 retrieval = [
-  "sentence-transformers>=3.3,<6",
+  "sentence-transformers>=3.3,<7",
   "numpy>=1.26,<3",
 ]
 dev = [
