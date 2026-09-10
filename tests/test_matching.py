@@ -105,3 +105,41 @@ def test_country_overlap_annotates_without_gating() -> None:
     assert disjoint.hits[0].risk_tier is RiskTier.EXACT
     assert "country_overlap" not in disjoint.hits[0].reasons
 
+
+
+def test_unrepresentable_names_are_unscoreable_not_exact() -> None:
+    # RapidFuzz scores two empty strings as 100; a name that normalizes to nothing
+    # (whitespace, punctuation, or a non-Latin script) must never be an exact hit.
+    arabic_alias = "\u0645\u062d\u0645\u062f \u0639\u0644\u064a"
+    for query in (" ", "***", "\u0412\u043b\u0430\u0434\u0438\u043c\u0438\u0440", arabic_alias):
+        score, reasons = similarity(query, arabic_alias)
+        assert score == 0.0
+        assert reasons == ("unscoreable_empty_normalized_name",)
+    assert similarity("Ivanov Ivan", "\u0418\u0432\u0430\u043d\u043e\u0432")[0] == 0.0
+    assert similarity("Acme", "Acme")[0] == 100.0
+
+
+def test_record_with_unrepresentable_alias_does_not_hit_on_unrepresentable_query() -> None:
+    records = [
+        SanctionsRecord(
+            source="TEST_LIST",
+            source_record_id="T-9",
+            primary_name="Example Person",
+            aliases=("\u0645\u062d\u0645\u062f \u0639\u0644\u064a",),
+        )
+    ]
+    result = screen_records(ScreeningQuery(name="***"), records, ("snap-1",))
+    assert result.hits == ()
+    assert result.review_required is False
+
+
+def test_country_normalization_covers_list_spellings() -> None:
+    assert normalize_country("Democratic People's Republic of Korea") == "KP"
+    assert normalize_country("Korea, Democratic People\u2019s Republic of") == "KP"
+    assert normalize_country("Korea, North") == "KP"
+    assert normalize_country("Congo, Democratic Republic of the") == "CD"
+    assert normalize_country("United Kingdom of Great Britain and Northern Ireland") == "GB"
+    assert normalize_country("UK") == "GB"
+    assert normalize_country("USA") == "US"
+    assert normalize_country("ru") == "RU"
+    assert normalize_country("Freedonia") == "freedonia"

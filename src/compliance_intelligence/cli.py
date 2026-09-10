@@ -22,6 +22,7 @@ from compliance_intelligence.ingestion.store import (
 )
 from compliance_intelligence.ingestion.synthetic import SyntheticFixtureAdapter
 from compliance_intelligence.matching.engine import screen_records
+from compliance_intelligence.matching.normalization import normalize_entity_name
 from compliance_intelligence.reporting.exports import write_hits_csv, write_json, write_run_tables
 
 SYNTHETIC_FIXTURE_RELATIVE_PATH = Path("samples/synthetic_sanctions_fixture.csv")
@@ -117,9 +118,10 @@ def _run_screen(
         app_settings.snapshot_directory,
         app_settings.allow_synthetic_dataset,
     )
-    if not snapshot_ids:
+    if not snapshot_ids or not records:
         print(
-            "No verified sanctions dataset snapshot is loaded; screening is unavailable. "
+            "No verified sanctions dataset snapshot with records is loaded; "
+            "screening is unavailable. "
             "Run 'compliance-intelligence ingest' first "
             "(synthetic snapshots also require ALLOW_SYNTHETIC_DATASET=true).",
             file=sys.stderr,
@@ -151,25 +153,42 @@ def _run_screen_batch(input_path: Path, output_dir: Path, app_settings: Settings
     snapshots = load_screening_snapshots(
         app_settings.snapshot_directory, app_settings.allow_synthetic_dataset
     )
-    if not snapshots:
+    records = [record for snapshot in snapshots for record in snapshot.records]
+    if not snapshots or not records:
         print(
-            "No verified sanctions dataset snapshot is loaded; screening is unavailable.",
+            "No verified sanctions dataset snapshot with records is loaded; "
+            "screening is unavailable.",
             file=sys.stderr,
         )
         return 1
-    records = [record for snapshot in snapshots for record in snapshot.records]
     snapshot_ids = tuple(snapshot.snapshot_id for snapshot in snapshots)
     thresholds = app_settings.matching_thresholds()
 
-    results = []
     with input_path.open(encoding="utf-8", newline="") as handle:
-        for row in csv.DictReader(handle):
-            query = ScreeningQuery(
-                name=row["name"],
-                countries=(row["country"],) if row.get("country") else (),
-                external_id=row.get("external_id"),
-            )
-            results.append(screen_records(query, records, snapshot_ids, thresholds))
+        rows = list(csv.DictReader(handle))
+    # A blank name, or one the normalizer cannot represent, would otherwise be
+    # exported as a "clear" screen. Refuse the whole batch so the input gets fixed.
+    unscreenable = [
+        row.get("external_id") or f"row {index}"
+        for index, row in enumerate(rows, start=2)
+        if not normalize_entity_name(row.get("name") or "")
+    ]
+    if unscreenable:
+        print(
+            "Batch refused: these rows have no screenable name after normalization "
+            f"(blank, punctuation-only, or unsupported script): {', '.join(unscreenable)}",
+            file=sys.stderr,
+        )
+        return 1
+
+    results = []
+    for row in rows:
+        query = ScreeningQuery(
+            name=row["name"],
+            countries=(row["country"],) if row.get("country") else (),
+            external_id=row.get("external_id"),
+        )
+        results.append(screen_records(query, records, snapshot_ids, thresholds))
 
     created_at = datetime.now(UTC)
     run = ScreeningRun(

@@ -15,7 +15,14 @@ from compliance_intelligence.matching.normalization import normalize_country, no
 
 # Version every score-affecting change here; eval reports record it so thresholds
 # are never reused across incompatible scorers.
-SCORER_VERSION = "rapidfuzz-ratio-tokensort-v2"
+# v3 (2026-09-10): a name that normalizes to nothing (whitespace, punctuation, or a
+# script the ASCII-folding normalizer cannot represent) now scores 0 with the reason
+# `unscoreable_empty_normalized_name`. RapidFuzz scores two empty strings as 100, so
+# under v2 any such query was an exact hit on every record carrying such an alias
+# (nine UN records on the 2026-08-11 snapshot). No score between two non-empty
+# normalized names changed; the regenerated v3 report is numerically identical to v2.
+SCORER_VERSION = "rapidfuzz-ratio-tokensort-v3"
+UNSCOREABLE_REASON = "unscoreable_empty_normalized_name"
 # Bump whenever the default thresholds change, citing the eval report that justified it.
 # v2: minimum 89.0 from the tune-split sweep in eval/results/matching_report.md
 # (holdout precision 1.0 / recall 0.833); strong 95.0 separates single-edit from
@@ -37,6 +44,8 @@ class MatchingThresholds:
 def similarity(left: str, right: str) -> tuple[float, tuple[str, ...]]:
     left_normalized = normalize_entity_name(left)
     right_normalized = normalize_entity_name(right)
+    if not left_normalized or not right_normalized:
+        return 0.0, (UNSCOREABLE_REASON,)
     direct = fuzz.ratio(left_normalized, right_normalized)
     token = fuzz.token_sort_ratio(left_normalized, right_normalized)
     reasons = ["normalized_sequence_similarity"]

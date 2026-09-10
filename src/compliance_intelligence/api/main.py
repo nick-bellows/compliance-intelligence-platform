@@ -35,6 +35,9 @@ def create_app(
         description="Auditable public-data screening and extraction portfolio",
     )
     loaded_records = records or []
+    # Screenable means a verified snapshot is loaded AND it carries records. A
+    # snapshot with zero records must never turn into a "clear" result.
+    screenable = bool(snapshot_ids) and bool(loaded_records)
 
     @app.get("/health", response_model=HealthResponse)
     def health() -> HealthResponse:
@@ -56,16 +59,22 @@ def create_app(
                     stale=stale,
                 )
             )
+        if not screenable:
+            status = "unavailable"
+        elif degraded:
+            status = "degraded"
+        else:
+            status = "ok"
         return HealthResponse(
-            status="degraded" if degraded else "ok",
-            datasets_loaded=bool(snapshot_ids),
+            status=status,
+            datasets_loaded=screenable,
             dataset_snapshot_ids=list(snapshot_ids),
             snapshots=snapshots,
         )
 
     @app.post("/v1/screen", response_model=ScreenResponse)
     def screen(request: ScreenRequest) -> ScreenResponse:
-        if not snapshot_ids:
+        if not screenable:
             raise HTTPException(
                 status_code=503,
                 detail="No verified sanctions dataset snapshot is loaded; screening is unavailable.",

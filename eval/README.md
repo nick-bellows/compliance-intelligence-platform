@@ -54,3 +54,18 @@ resolves substrings to character offsets and fails on any ambiguity.
 
 Do not add numeric results to the README until the evaluation scripts and labeled artifacts are committed and reproducible.
 
+## Committed results and the drift check
+
+`results/` holds the reports the README and model cards cite. Regenerate them
+with the runners (`python eval/run_matching_eval.py`; the NER and retrieval
+runners need the `[nlp]` and `[retrieval]` extras plus the ingested corpus) and
+commit the regenerated files together with the code change that motivated them.
+
+The matching report is guarded mechanically: `tests/test_eval_runner.py`
+regenerates it into a temporary directory (`--output-dir`) and fails if anything
+other than the generation timestamp differs from `results/matching_report.*`.
+A scorer, threshold, or labeled-set change therefore cannot land with stale
+numbers. The labeled sets are consumed once they are published; extending the
+matcher or extraction rules requires fresh annotations, not tuning against the
+committed sets.
+

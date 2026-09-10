@@ -92,3 +92,26 @@ def test_screen_batch_writes_run_tables(
         "source_snapshots.csv",
     ):
         assert (output_dir / table).exists()
+
+
+def test_screen_batch_refuses_unscreenable_names(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+) -> None:
+    settings = _settings(tmp_path)
+    assert main(["ingest", "--source", "synthetic"], settings) == 0
+    capsys.readouterr()
+
+    input_csv = tmp_path / "batch.csv"
+    input_csv.write_text(
+        "external_id,name,country\nX-1,Acme Galactic Holdings,\nX-2,   ,\nX-3,***,\n",
+        encoding="utf-8",
+    )
+    output_dir = tmp_path / "run"
+    assert (
+        main(["screen-batch", "--input", str(input_csv), "--output-dir", str(output_dir)], settings)
+        == 1
+    )
+    err = capsys.readouterr().err
+    assert "Batch refused" in err
+    assert "X-2" in err and "X-3" in err and "X-1" not in err
+    assert not output_dir.exists()

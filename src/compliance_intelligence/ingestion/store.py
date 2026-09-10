@@ -77,13 +77,23 @@ def load_snapshots(directory: Path) -> list[SourceSnapshot]:
 
 
 def load_screening_snapshots(directory: Path, allow_synthetic: bool) -> list[SourceSnapshot]:
-    """Load snapshots eligible for screening, excluding synthetic ones unless allowed."""
+    """Load the snapshots eligible for screening: the newest one per source.
 
-    return [
-        snapshot
-        for snapshot in load_snapshots(directory)
-        if allow_synthetic or not snapshot.snapshot_id.startswith(SYNTHETIC_SNAPSHOT_PREFIX)
-    ]
+    Synthetic snapshots are excluded unless allowed. Every refresh writes a new
+    immutable file, so the directory accumulates history; screening against all of
+    it would duplicate hits and keep delisted entities flagged. Older files stay on
+    disk for audit, but only the most recently retrieved snapshot of each source is
+    served. Ties on retrieval time keep the first file in name order.
+    """
+
+    newest: dict[str, SourceSnapshot] = {}
+    for snapshot in load_snapshots(directory):
+        if not allow_synthetic and snapshot.snapshot_id.startswith(SYNTHETIC_SNAPSHOT_PREFIX):
+            continue
+        current = newest.get(snapshot.source_name)
+        if current is None or snapshot.retrieved_at > current.retrieved_at:
+            newest[snapshot.source_name] = snapshot
+    return sorted(newest.values(), key=lambda snapshot: snapshot.snapshot_id)
 
 
 def load_screening_dataset(

@@ -6,7 +6,7 @@ An auditable portfolio system for public sanctions screening and information ext
 
 > **Status: implemented reference system, validated with committed synthetic fixtures and public-source adapters.** The included names and example records are fictional. Reported evaluation results apply only to the versioned labeled sets in this repository; they are not real screening determinations.
 
-**[Open the three-minute synthetic analyst walkthrough](docs/index.html)** to follow a clear result, an explainable review candidate, and the API's fail-closed behavior. The static artifact is generated from committed reviewed run tables; it does not expose a public screening endpoint.
+**[Open the three-minute synthetic analyst walkthrough](https://nick-bellows.github.io/compliance-intelligence-platform/)** (GitHub Pages, no install) to follow a clear result, an explainable review candidate, and the API's fail-closed behavior. The page is the committed [docs/index.html](docs/index.html), generated from reviewed run tables and drift-checked in CI; it does not expose a public screening endpoint.
 
 ## Technology demonstrated
 
@@ -72,7 +72,7 @@ uvicorn compliance_intelligence.api.main:app --reload
 
 The health endpoint is available immediately. The screening endpoint returns `503` until a verified dataset snapshot is loaded; this prevents an empty dataset from producing false “clear” results. Snapshots are loaded at startup from `SNAPSHOT_DIRECTORY` (default `data/processed/snapshots`); snapshots produced from the synthetic fixture are excluded unless `ALLOW_SYNTHETIC_DATASET=true`, keeping demonstration data isolated from real screening.
 
-The GitHub Actions workflow in `.github/workflows/quality.yml` runs lint, strict type checks, tests with a coverage gate, manifest validation, and the container build on every push; `scripts/run_checks.ps1` runs the identical checks locally.
+The GitHub Actions workflow in `.github/workflows/quality.yml` runs lint, strict type checks, tests with a coverage gate, manifest validation, the walkthrough and evaluation-report drift checks, a container smoke test (`503` with no verified snapshot, then an exact hit with snapshot provenance from the synthetic fixture), a dependency vulnerability audit, and a full-history secret scan on every push. `scripts/run_checks.ps1` runs the same Python checks locally; `scripts/smoke_docker.ps1` or `scripts/smoke_docker.sh` runs the container test.
 
 For the containerized API:
 
@@ -82,7 +82,7 @@ docker compose config
 docker compose up --build
 ```
 
-The API port is bound to `127.0.0.1`. The container loads snapshots from the read-only `./data` mount at startup; with `ALLOW_SYNTHETIC_DATASET=true` in `.env` it serves the labeled synthetic fixture. Screening against authoritative data remains unavailable until the M1 source adapters are implemented and verified.
+The API port is bound to `127.0.0.1`. The container loads snapshots from the read-only `./data` mount at startup; with `ALLOW_SYNTHETIC_DATASET=true` in `.env` it serves the labeled synthetic fixture. To screen against authoritative data instead, run `compliance-intelligence ingest --source ofac` and `compliance-intelligence ingest --source un` on the host (each saves a verified snapshot with source URL, retrieval time, terms note, and SHA-256 under `data/processed/snapshots` and marks the source active in the manifest), keep `ALLOW_SYNTHETIC_DATASET=false`, and restart the container. The API serves the newest snapshot per source (earlier files stay on disk for audit), and `/health` reports snapshot age, turning `degraded` past the configured maximum.
 
 ## Delivery milestones
 
@@ -105,9 +105,9 @@ The API port is bound to `127.0.0.1`. The container loads snapshots from the rea
 ### M3 — Portfolio release
 
 - [x] Docker build and smoke test pass (`scripts/smoke_docker.ps1`).
-- [x] CI, lint, types, and tests pass — verified locally via `scripts/run_checks.ps1`; the GitHub Actions workflow runs the identical commands once the repo is pushed.
+- [x] CI, lint, types, and tests pass — the [quality workflow](https://github.com/nick-bellows/compliance-intelligence-platform/actions/workflows/quality.yml) runs them on every push; `scripts/run_checks.ps1` runs the same commands locally.
 - [x] Data cards and model/evaluation cards are complete ([docs/data-cards/](docs/data-cards/), [docs/model-cards/](docs/model-cards/)).
-- [x] Dashboard ships in-repo: `compliance-intelligence dashboard --run-dir <run>` renders the five documented views (KPIs, review queue, score distribution with versioned thresholds, hits by source, dataset freshness) as one dependency-free HTML file — committed synthetic-only walkthrough at [docs/index.html](docs/index.html), rendering and artifact drift tested. The Power BI import path remains documented in [powerbi/README.md](powerbi/README.md) for teams standardized on it.
+- [x] Dashboard ships in-repo: `compliance-intelligence dashboard --run-dir <run>` renders the five documented views (KPIs, review queue, score distribution with versioned thresholds, hits by source, dataset freshness) as one dependency-free HTML file — committed synthetic-only walkthrough at [docs/index.html](docs/index.html), published on [GitHub Pages](https://nick-bellows.github.io/compliance-intelligence-platform/), rendering and artifact drift tested. The Power BI import path remains documented in [powerbi/README.md](powerbi/README.md) for teams standardized on it.
 - [x] Limitations, failure cases, and human-review workflow are documented ([docs/limitations.md](docs/limitations.md)).
 
 ## Disclaimer

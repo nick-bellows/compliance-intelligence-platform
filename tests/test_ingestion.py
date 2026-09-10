@@ -1,3 +1,4 @@
+import hashlib
 import json
 from datetime import UTC, datetime
 from pathlib import Path
@@ -129,3 +130,38 @@ def test_manifest_updater_rejects_unregistered_source(tmp_path: Path) -> None:
             sha256="d" * 64,
             record_count=0,
         )
+
+
+def test_ofac_zero_record_list_is_rejected() -> None:
+    zero = (
+        b"<sdnList><publshInformation><Publish_Date>09/10/2026</Publish_Date>"
+        b"<Record_Count>0</Record_Count></publshInformation></sdnList>"
+    )
+    with pytest.raises(ValueError, match="zero records"):
+        parse_sdn_xml(zero)
+
+
+def test_same_day_refetch_keeps_both_raw_files(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    payloads = iter(
+        [SDN_FIXTURE, SDN_FIXTURE.replace(b"ACME GALACTIC HOLDINGS", b"ACME GALACTIC HOLDING")]
+    )
+    monkeypatch.setattr(
+        "compliance_intelligence.ingestion.ofac.download_bytes", lambda url: next(payloads)
+    )
+    adapter = OfacAdapter(tmp_path)
+    first = adapter.fetch()
+    second = adapter.fetch()
+    assert first.sha256 != second.sha256
+
+    raw_files = sorted(tmp_path.rglob("SDN.XML"))
+    assert len(raw_files) == 2
+    assert {hashlib.sha256(path.read_bytes()).hexdigest() for path in raw_files} == {
+        first.sha256,
+        second.sha256,
+    }
+    assert {path.parent.name.rsplit("-", 1)[-1] for path in raw_files} == {
+        first.sha256[:12],
+        second.sha256[:12],
+    }

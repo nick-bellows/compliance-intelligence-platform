@@ -16,6 +16,7 @@ def test_health_exposes_dataset_state() -> None:
     response = client.get("/health")
     assert response.status_code == 200
     assert response.json()["datasets_loaded"] is False
+    assert response.json()["status"] == "unavailable"
 
 
 def test_screen_fails_closed_without_verified_data() -> None:
@@ -114,3 +115,75 @@ def test_health_degrades_when_snapshot_exceeds_max_age(tmp_path: Path) -> None:
     assert body["snapshots"][0]["stale"] is True
     assert body["snapshots"][0]["retrieved_at_utc"].startswith("2025-01-01")
 
+
+
+def _one_record() -> list[SanctionsRecord]:
+    return [
+        SanctionsRecord(
+            source="SYNTHETIC_LIST",
+            source_record_id="FAKE-001",
+            primary_name="Acme Galactic Holdings",
+        )
+    ]
+
+
+def test_screen_rejects_names_with_nothing_to_compare() -> None:
+    client = TestClient(create_app(_one_record(), ("synthetic-fixture-v1",)))
+    for name in (" ", "\t\n", "***", "\u0412\u043b\u0430\u0434\u0438\u043c\u0438\u0440"):
+        assert client.post("/v1/screen", json={"name": name}).status_code == 422
+
+
+def test_screen_rejects_oversized_country_values() -> None:
+    client = TestClient(create_app(_one_record(), ("synthetic-fixture-v1",)))
+    response = client.post("/v1/screen", json={"name": "Acme", "countries": ["x" * 101]})
+    assert response.status_code == 422
+
+
+def test_screen_fails_closed_when_loaded_snapshot_has_no_records() -> None:
+    client = TestClient(create_app([], ("ofac_primary-20260910-000000000000",)))
+    health = client.get("/health").json()
+    assert health["datasets_loaded"] is False
+    assert health["status"] == "unavailable"
+    assert client.post("/v1/screen", json={"name": "Anyone"}).status_code == 503
+
+
+def _ofac_snapshot(snapshot_id: str, retrieved_at: datetime, name: str) -> SourceSnapshot:
+    return SourceSnapshot(
+        snapshot_id=snapshot_id,
+        source_name="OFAC_SDN",
+        source_url="https://example.invalid/sdn.xml",
+        retrieved_at=retrieved_at,
+        sha256=(snapshot_id[-12:] * 6)[:64],
+        terms_note="test",
+        records=(SanctionsRecord(source="OFAC_SDN", source_record_id=name, primary_name=name),),
+    )
+
+
+def test_settings_app_serves_only_the_newest_snapshot_per_source(tmp_path: Path) -> None:
+    save_snapshot(
+        _ofac_snapshot(
+            "ofac_primary-20260801-aaaaaaaaaaaa",
+            datetime(2026, 8, 1, tzinfo=UTC),
+            "Delisted Alpha Trading",
+        ),
+        tmp_path,
+    )
+    save_snapshot(
+        _ofac_snapshot(
+            "ofac_primary-20260901-bbbbbbbbbbbb",
+            datetime(2026, 9, 1, tzinfo=UTC),
+            "Zulu Maritime Nine",
+        ),
+        tmp_path,
+    )
+    client = TestClient(build_app_from_settings(Settings(_env_file=None, snapshot_directory=tmp_path)))
+    assert client.get("/health").json()["dataset_snapshot_ids"] == [
+        "ofac_primary-20260901-bbbbbbbbbbbb"
+    ]
+    # The delisted name is only in the superseded snapshot, so it must not hit.
+    delisted = client.post("/v1/screen", json={"name": "Delisted Alpha Trading"}).json()
+    assert delisted["hits"] == []
+    assert delisted["review_required"] is False
+    current = client.post("/v1/screen", json={"name": "Zulu Maritime Nine"}).json()
+    assert current["review_required"] is True
+    assert current["hits"][0]["source_record_id"] == "Zulu Maritime Nine"

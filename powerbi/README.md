@@ -2,7 +2,7 @@
 
 > An in-repo HTML dashboard covering the same five views ships with the CLI
 > (`compliance-intelligence dashboard --run-dir <run>`; committed demo at
-> `docs/dashboard.html`). This document remains the import guide for teams
+> `docs/dashboard.html`, published on GitHub Pages). This document remains the import guide for teams
 > standardized on Power BI — both consume the identical reviewed run tables.
 
 Power BI consumes reviewed aggregate CSV exports; it does not query raw source
@@ -63,11 +63,15 @@ Exact Hits        = CALCULATE([Hits], screening_hits[risk_tier] = "exact")
 
 ## Publication checklist
 
-- [x] Relationships and measures are documented.
-- [ ] Screenshots use only synthetic entities. *(pending: build the report in
-  Power BI Desktop from a synthetic-only run and capture screenshots)*
-- [ ] Filters cannot expose hidden real-person records. *(verify in the built
-  report before publishing)*
-- [x] The refresh procedure identifies the dataset snapshot (snapshot IDs are
-  first-class columns in every run directory).
-- [ ] The `.pbix` file has been inspected for embedded data before publication.
+No `.pbix` is committed and none has been built; the shipped dashboard is the
+in-repo HTML renderer described above, and `powerbi/*.pbix` is ignored by Git.
+If a team builds the report, complete every item before publishing it or its
+screenshots:
+
+1. Screenshots use only synthetic entities — build from a synthetic-only run
+   such as `data/samples/demo_batch_entities.csv`.
+2. Filters and drill-through cannot expose hidden real-person records.
+3. The refresh procedure identifies the dataset snapshot. Snapshot IDs are
+   first-class columns in every run directory, so this holds by construction.
+4. The `.pbix` file has been inspected for embedded data — Power BI imports the
+   CSVs into the file — before publication.

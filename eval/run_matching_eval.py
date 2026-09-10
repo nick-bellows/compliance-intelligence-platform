@@ -8,6 +8,7 @@ difflib path will be removed after one release.
 
 from __future__ import annotations
 
+import argparse
 import csv
 import hashlib
 import json
@@ -233,7 +234,23 @@ def render_markdown(report: dict[str, object]) -> str:
     return "\n".join(lines)
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=RESULTS_DIR,
+        help=(
+            "where to write matching_report.{json,md}; defaults to the committed "
+            "eval/results, which is the documented regeneration path. The test suite "
+            "passes a temporary directory and compares against the committed reports."
+        ),
+    )
+    return parser.parse_args()
+
+
 def main() -> int:
+    output_dir = parse_args().output_dir
     report: dict[str, object] = {
         "generated_at_utc": datetime.now(UTC).isoformat(),
         "scorer_version": SCORER_VERSION,
@@ -242,16 +259,16 @@ def main() -> int:
         "cases_file_sha256": hashlib.sha256(CASES_PATH.read_bytes()).hexdigest(),
         "scorers": {scorer: evaluate(scorer) for scorer in ("rapidfuzz", "difflib")},
     }
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    (RESULTS_DIR / "matching_report.json").write_text(
-        json.dumps(report, indent=2), encoding="utf-8"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    (output_dir / "matching_report.json").write_text(
+        json.dumps(report, indent=2) + "\n", encoding="utf-8"
     )
-    (RESULTS_DIR / "matching_report.md").write_text(render_markdown(report), encoding="utf-8")
+    (output_dir / "matching_report.md").write_text(render_markdown(report), encoding="utf-8")
     rapidfuzz_result = report["scorers"]["rapidfuzz"]  # type: ignore[index]
     print(f"cases={rapidfuzz_result['case_count']}")
     print(f"recommended_minimum={rapidfuzz_result['recommended_minimum_threshold']}")
     print(f"holdout_at_recommended={rapidfuzz_result['holdout_at_recommended']}")
-    print(f"reports={RESULTS_DIR}")
+    print(f"reports={output_dir}")
     return 0
 
 

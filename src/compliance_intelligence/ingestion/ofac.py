@@ -96,6 +96,10 @@ def parse_sdn_xml(payload: bytes) -> tuple[SanctionsRecord, ...]:
         raise ValueError(
             f"SDN.XML declares {declared_count} records but {len(records)} were parsed"
         )
+    if not records:
+        # A well-formed file that declares and contains zero entries is still not a
+        # screenable list; accepting it would make every screen come back "clear".
+        raise ValueError("SDN.XML parsed to zero records")
     return records
 
 
@@ -110,7 +114,9 @@ class OfacAdapter:
         payload = download_bytes(self._url)
         retrieved_at = datetime.now(UTC)
         digest = hashlib.sha256(payload).hexdigest()
-        raw_dir = self._raw_directory / SOURCE_ID / retrieved_at.strftime("%Y%m%d")
+        # Keyed by date and content hash, like the snapshot ID, so a second fetch on
+        # the same day cannot overwrite the bytes an earlier snapshot's sha256 names.
+        raw_dir = self._raw_directory / SOURCE_ID / f"{retrieved_at:%Y%m%d}-{digest[:12]}"
         raw_dir.mkdir(parents=True, exist_ok=True)
         (raw_dir / "SDN.XML").write_bytes(payload)
         records = parse_sdn_xml(payload)

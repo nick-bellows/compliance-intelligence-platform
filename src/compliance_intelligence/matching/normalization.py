@@ -37,6 +37,8 @@ _COUNTRY_ALPHA2 = {
     "burma": "MM",
     "central african republic": "CF",
     "china": "CN",
+    "congo democratic republic of the": "CD",
+    "congo the democratic republic of the": "CD",
     "cote d ivoire": "CI",
     "cuba": "CU",
     "democratic peoples republic of korea": "KP",
@@ -53,6 +55,8 @@ _COUNTRY_ALPHA2 = {
     "iran islamic republic of": "IR",
     "iraq": "IQ",
     "japan": "JP",
+    "korea democratic peoples republic of": "KP",
+    "korea north": "KP",
     "lebanon": "LB",
     "libya": "LY",
     "mali": "ML",
@@ -74,11 +78,14 @@ _COUNTRY_ALPHA2 = {
     "syrian arab republic": "SY",
     "turkey": "TR",
     "turkiye": "TR",
+    "uk": "GB",
     "ukraine": "UA",
     "united arab emirates": "AE",
     "united kingdom": "GB",
+    "united kingdom of great britain and northern ireland": "GB",
     "united states": "US",
     "united states of america": "US",
+    "usa": "US",
     "venezuela": "VE",
     "venezuela bolivarian republic of": "VE",
     "yemen": "YE",
@@ -86,10 +93,24 @@ _COUNTRY_ALPHA2 = {
 }
 
 
-def normalize_country(value: str) -> str:
-    """Map a country name or code to alpha-2 where known, else its normalized form."""
+_APOSTROPHES = ("'", "’", "ʼ")
 
-    normalized = normalize_entity_name(value)
+
+def normalize_country(value: str) -> str:
+    """Map a country name or code to alpha-2 where known, else its normalized form.
+
+    Apostrophes are removed rather than turned into token boundaries so that
+    "Democratic People's Republic of Korea" (the UN spelling) reaches its map key.
+    Known aliases such as "UK"/"USA" are mapped before the generic two-letter rule.
+    """
+
+    stripped = value
+    for apostrophe in _APOSTROPHES:
+        stripped = stripped.replace(apostrophe, "")
+    normalized = normalize_entity_name(stripped)
+    mapped = _COUNTRY_ALPHA2.get(normalized)
+    if mapped is not None:
+        return mapped
     if len(normalized) == 2 and normalized.isalpha():
         return normalized.upper()
-    return _COUNTRY_ALPHA2.get(normalized, normalized)
+    return normalized

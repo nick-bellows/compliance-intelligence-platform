@@ -10,6 +10,22 @@ from compliance_intelligence.domain.models import RiskTier, ScreeningResult, Scr
 from compliance_intelligence.ingestion.base import SourceSnapshot
 from compliance_intelligence.matching.normalization import normalize_entity_name
 
+# Analysts open these exports in Excel and Power BI, which evaluate cells that start
+# with these characters as formulas. A leading apostrophe makes them inert text.
+_FORMULA_PREFIXES = ("=", "+", "-", "@", "\t", "\r")
+
+
+def neutralize_cell(value: object) -> object:
+    """Prefix a string cell with an apostrophe if a spreadsheet would execute it."""
+
+    if isinstance(value, str) and value.startswith(_FORMULA_PREFIXES):
+        return "'" + value
+    return value
+
+
+def _neutralized(row: dict[str, object]) -> dict[str, object]:
+    return {key: neutralize_cell(value) for key, value in row.items()}
+
 
 def write_json(result: ScreeningResult, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -34,15 +50,17 @@ def write_hits_csv(result: ScreeningResult, path: Path) -> None:
         writer.writeheader()
         for hit in result.hits:
             writer.writerow(
-                {
-                    "query_name": result.query.name,
-                    "source": hit.source,
-                    "source_record_id": hit.source_record_id,
-                    "matched_name": hit.matched_name,
-                    "score": hit.score,
-                    "risk_tier": hit.risk_tier,
-                    "reasons": "|".join(hit.reasons),
-                }
+                _neutralized(
+                    {
+                        "query_name": result.query.name,
+                        "source": hit.source,
+                        "source_record_id": hit.source_record_id,
+                        "matched_name": hit.matched_name,
+                        "score": hit.score,
+                        "risk_tier": hit.risk_tier,
+                        "reasons": "|".join(hit.reasons),
+                    }
+                )
             )
 
 
@@ -51,7 +69,7 @@ def _write_table(path: Path, fieldnames: Sequence[str], rows: Iterable[dict[str,
     with path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerows(rows)
+        writer.writerows(_neutralized(row) for row in rows)
 
 
 def write_run_tables(

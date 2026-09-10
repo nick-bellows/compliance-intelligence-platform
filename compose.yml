@@ -6,7 +6,9 @@ services:
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       DATA_DIRECTORY: /app/data
       OUTPUT_DIRECTORY: /app/output
-      SNAPSHOT_DIRECTORY: /app/data/processed/snapshots
+      # Container path. Overridable so the smoke tests can point the API at an
+      # isolated fixture-only directory under the same read-only ./data mount.
+      SNAPSHOT_DIRECTORY: ${SNAPSHOT_DIRECTORY:-/app/data/processed/snapshots}
       ALLOW_SYNTHETIC_DATASET: ${ALLOW_SYNTHETIC_DATASET:-false}
       MINIMUM_MATCH_SCORE: ${MINIMUM_MATCH_SCORE:-89.0}
       STRONG_MATCH_SCORE: ${STRONG_MATCH_SCORE:-95.0}

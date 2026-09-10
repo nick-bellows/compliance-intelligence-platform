@@ -115,3 +115,45 @@ def test_write_run_tables_emits_four_related_tables(tmp_path: Path) -> None:
     )
     assert snapshots[0]["snapshot_id"] == "snap-1"
     assert snapshots[0]["record_count"] == "1"
+
+
+def test_exports_neutralize_spreadsheet_formulas(tmp_path: Path) -> None:
+    hostile = ScreeningResult(
+        query=ScreeningQuery(
+            name='=HYPERLINK("http://evil.example","click")',
+            external_id="-2+3+cmd|' /C calc'!A0",
+        ),
+        hits=(
+            ScreeningHit(
+                source="SYNTHETIC_LIST",
+                source_record_id="FAKE-001",
+                matched_name="@SUM(1+1)",
+                score=99.0,
+                risk_tier=RiskTier.STRONG,
+                reasons=("normalized_sequence_similarity",),
+            ),
+        ),
+        dataset_snapshot_ids=("snap-1",),
+    )
+
+    write_hits_csv(hostile, tmp_path / "hits.csv")
+    row = next(csv.DictReader((tmp_path / "hits.csv").read_text(encoding="utf-8").splitlines()))
+    assert row["query_name"] == "'=HYPERLINK(\"http://evil.example\",\"click\")"
+    assert row["matched_name"] == "'@SUM(1+1)"
+    assert row["score"] == "99.0"
+
+    run = ScreeningRun(
+        run_id="run-test-0002",
+        created_at=datetime(2026, 9, 10, tzinfo=UTC),
+        dataset_snapshot_ids=("snap-1",),
+        input_count=1,
+    )
+    tables = write_run_tables(run, [hostile], [], tmp_path)
+    entity = next(
+        csv.DictReader(tables["screening_entities"].read_text(encoding="utf-8").splitlines())
+    )
+    hit = next(csv.DictReader(tables["screening_hits"].read_text(encoding="utf-8").splitlines()))
+    assert entity["external_id"] == "'-2+3+cmd|' /C calc'!A0"
+    assert entity["query_name"].startswith("'=")
+    # The join key is neutralized identically in both tables.
+    assert hit["external_id"] == entity["external_id"]

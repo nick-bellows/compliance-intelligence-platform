@@ -127,7 +127,9 @@ class UnConsolidatedAdapter:
         payload = download_bytes(self._url)
         retrieved_at = datetime.now(UTC)
         digest = hashlib.sha256(payload).hexdigest()
-        raw_dir = self._raw_directory / SOURCE_ID / retrieved_at.strftime("%Y%m%d")
+        # Keyed by date and content hash, like the snapshot ID, so a second fetch on
+        # the same day cannot overwrite the bytes an earlier snapshot's sha256 names.
+        raw_dir = self._raw_directory / SOURCE_ID / f"{retrieved_at:%Y%m%d}-{digest[:12]}"
         raw_dir.mkdir(parents=True, exist_ok=True)
         (raw_dir / "consolidated.xml").write_bytes(payload)
         records = parse_consolidated_xml(payload)

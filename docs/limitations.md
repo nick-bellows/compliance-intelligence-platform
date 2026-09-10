@@ -13,6 +13,11 @@ professional. Every output is a review lead.
   floor; scores in [85, 89) deserve spot checks. Identifiers (passport,
   registration numbers) are not matched — name-only screening. The labeled set
   is synthetic, single-annotator, and has been consumed for threshold tuning.
+- **Scripts**: the normalizer ASCII-folds, so names written in Cyrillic,
+  Arabic, CJK, or other non-Latin scripts have nothing to compare. Such queries
+  are rejected (API `422`; `screen-batch` refuses the batch) instead of being
+  reported clear, and list aliases in those scripts are invisible to the
+  scorer. Transliteration needs a fresh labeled set before it can be evaluated.
 - **Coverage**: two lists (OFAC classic SDN, UN Consolidated). `sdn_advanced`
   fields, EU/UK lists, and delisting histories are out of scope. Address
   countries are weak proxies for nationality.
@@ -22,16 +27,23 @@ professional. Every output is a review lead.
 - **Retrieval**: dense encoding truncates long designation lists; relevance
   judgments are anchor-phrase approximations.
 - **Data freshness**: snapshots are point-in-time; `/health` flags staleness
-  after `MAX_SNAPSHOT_AGE_DAYS` but nothing auto-refreshes.
+  after `MAX_SNAPSHOT_AGE_DAYS` but nothing auto-refreshes. Only the newest
+  snapshot per source is screened; superseded files stay on disk for audit.
+- **Exports**: free-text cells that begin with a spreadsheet formula character
+  are prefixed with an apostrophe so Excel and Power BI treat them as text; an
+  `external_id` such as `-100` therefore appears as `'-100` in every table.
 - **No persistence layer**: screening runs are exported files, not a queryable
   store; there is no audit database of who screened what.
 
 ## Human-review workflow
 
 1. Ingest fresh snapshots (`ingest --source ofac`, `--source un`); confirm
-   `/health` reports `status: ok` and the expected snapshot IDs.
-2. Run `screen-batch` over the entity file; import the four CSVs into the
-   Power BI model (see powerbi/README.md).
+   `/health` reports `status: ok` and the expected snapshot IDs
+   (`unavailable` means nothing screenable is loaded and `/v1/screen` returns
+   `503`; `degraded` means a loaded snapshot exceeds the maximum age).
+2. Run `screen-batch` over the entity file; render the review dashboard from
+   the run directory (`compliance-intelligence dashboard --run-dir <run>`) or
+   import the same four CSVs into Power BI (see powerbi/README.md).
 3. Triage the review queue by tier: `exact` and `strong_fuzzy` hits first, then
    `weak_fuzzy`. Use the reason codes and matched alias to understand *why* a
    hit fired; `country_overlap` is corroborating context, never sufficient.
