@@ -1,6 +1,6 @@
 # Roadmap
 
-Last verified: 2026-09-10
+Last verified: 2026-09-12
 
 ## Handoff snapshot
 
@@ -8,11 +8,15 @@ Last verified: 2026-09-10
 | --- | --- |
 | Lifecycle | `PORTFOLIO-READY` - finalized for employer review 2026-09-10; maintenance only |
 | Portfolio role | Supporting API, ingestion, explainability, data-quality, retrieval, and auditability evidence |
-| Public presentation | README plus the synthetic analyst walkthrough, live on GitHub Pages at <https://nick-bellows.github.io/compliance-intelligence-platform/> (legacy Pages build from `master:/docs`; logged-out HTTP 200 verified 2026-09-10). `docs/index.html` and `docs/dashboard.html` are the same generated artifact |
+| Public presentation | README plus the synthetic analyst walkthrough, live on GitHub Pages at <https://nick-bellows.github.io/compliance-intelligence-platform/> (legacy Pages build from `master:/docs`; logged-out HTTP 200 verified 2026-09-10). `docs/index.html` and `docs/dashboard.html` are the same generated artifact: the product dashboard plus a recruiter FAQ whose figures are read from `eval/results` at build time |
 | Data boundary | Public official-source adapters and clearly isolated fictional evaluation/demo records |
 | CI (`quality` workflow) | Lint, strict types, tests with an 80% coverage gate, manifest validation, walkthrough and evaluation-report drift checks, clean-tree check, container smoke test, pip-audit, full-history gitleaks; read-only token, SHA-pinned actions, Dependabot version updates |
 
 The system fails closed without a verified snapshot, retains source provenance, exposes an API, produces analyst exports, and evaluates matching, extraction, and retrieval. Presentation is delivered and live. No engineering milestone is scheduled.
+
+## Completed milestone - recruiter FAQ (2026-09-12)
+
+The closing change. The walkthrough now ends with fifteen questions a screening call actually asks -- what it is, whether it can clear anyone, whether AI built it, whether the data is real, how good the matching is, why the weak extraction and dense-retrieval numbers are published, what happens when source data is missing, how long it took, and whether it is finished -- each answered from the repository's own evidence with a link to it. `scripts/build_portfolio_walkthrough.py` composes the section onto the product dashboard and reads every figure from the committed evaluation reports, so the existing `--check` gate fails if a report changes without the page; `tests/test_walkthrough_faq.py` additionally pins the page's figures and links to the reports and to tracked files. No code path, threshold, labeled set, or number of record changed. Nothing further is planned.
 
 ## Completed milestone - finalization for review (2026-09-10)
 

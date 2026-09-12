@@ -6,7 +6,7 @@ An auditable portfolio system for public sanctions screening and information ext
 
 > **Status: implemented reference system, validated with committed synthetic fixtures and public-source adapters.** The included names and example records are fictional. Reported evaluation results apply only to the versioned labeled sets in this repository; they are not real screening determinations.
 
-**[Open the three-minute synthetic analyst walkthrough](https://nick-bellows.github.io/compliance-intelligence-platform/)** (GitHub Pages, no install) to follow a clear result, an explainable review candidate, and the API's fail-closed behavior. The page is the committed [docs/index.html](docs/index.html), generated from reviewed run tables and drift-checked in CI; it does not expose a public screening endpoint.
+**[Open the three-minute synthetic analyst walkthrough](https://nick-bellows.github.io/compliance-intelligence-platform/)** (GitHub Pages, no install) to follow a clear result, an explainable review candidate, and the API's fail-closed behavior. The page is the committed [docs/index.html](docs/index.html), generated from reviewed run tables and drift-checked in CI; it does not expose a public screening endpoint. Screening a candidate? The page ends with a [recruiter FAQ](https://nick-bellows.github.io/compliance-intelligence-platform/#faq) whose figures are read from the committed evaluation reports and checked in CI.
 
 ## Technology demonstrated
 
