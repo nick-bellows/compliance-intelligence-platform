@@ -135,12 +135,17 @@ def portfolio_faq() -> str:
         (
             "Was it built with AI?",
             (
-                f"Yes, with Claude Code, and {_link('ROADMAP.md', 'ROADMAP.md')} says what it did "
-                "rather than leaving it to be inferred: the finalization round ran unattended, and a "
-                "read-only review of the code found eight defects that were each fixed with a "
-                "regression test. The guardrail is mechanical rather than a promise. This page and "
-                "the committed evaluation reports are regenerated in CI, and the build fails if "
-                "either differs from what the code produces."
+                "Yes, as a collaboration between the author and Claude Code rather than a hand-off "
+                "to either. The author set the problem, the data and safety boundaries, the "
+                "stop conditions, and the rule that thresholds and reports are versioned and never "
+                "silently changed, and reviewed and directed the work throughout; Claude Code did "
+                "much of the implementation and testing under those rules. "
+                f"{_link('ROADMAP.md', 'ROADMAP.md')} records the division of labour rather than "
+                "leaving it to be inferred, including a finalization round that ran unattended and a "
+                "read-only review of the code that found eight defects, each fixed with a regression "
+                "test. The guardrail is mechanical rather than a promise: this page and the committed "
+                "evaluation reports are regenerated in CI, and the build fails if either differs from "
+                "what the code produces."
             ),
         ),
         (
